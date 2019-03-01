@@ -74,6 +74,6 @@ typedef struct			player_s
 	struct player_s		*next;
 }						player_t;
 
-void	make_core2(t_core *a);
+void					make_core2(t_core *a);
 
 #endif
