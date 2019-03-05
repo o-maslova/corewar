@@ -8,7 +8,7 @@ CUR_FLAG = -lncurses -g
 
 LIB = libft.a
 SRC = op.c \
-		main.c \
+		main3.c \
 		try.c
 
 INCLUDES = ./op.h ./corelib.h ./visualization.h

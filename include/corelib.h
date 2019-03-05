@@ -14,14 +14,21 @@
 # define CORELIB_H
 
 #include "op.h"
+#include "typedef.h"
 
 #define PFC_RED			"\x1b[31m"
 #define PFC_RESET		"\x1b[0m"
 #define PFC_GREEN		"\x1b[32m"
 
-typedef struct			carriage_s
+# define MAINW_ROWS			64
+# define PLAYER_FIELD		(MEM_SIZE / a->num_pl)
+# define VIS				a->visual
+// # define NUM_PL				a->num_pl
+
+struct					s_carriage
 {
 	unsigned int		player;			//номер игрока, породившего каретку//
+	int					len_of_player;
 	int					f;				//номер функции, которую будет выполнять//
 	int					jump;			//количество байт, которые нужно будет «перешагнуть», чтобы оказаться на следующей операции//
 	int					live;			//цикл, в котором в последний раз была выполнена операция live//
@@ -31,10 +38,11 @@ typedef struct			carriage_s
 	unsigned char		r[REG_NUMBER][REG_SIZE];
 	int					carry;			//0 = false; 1 = true//
 	int					error;
-	struct carriage_s	*next;
-}						carriage_t;
+	short				color;
+	t_carriage			*next;
+};
 
-typedef struct  		s_op
+struct	 				s_op
 {
 	char				*name;
 	unsigned char		nb_args;
@@ -44,11 +52,12 @@ typedef struct  		s_op
 	char				*description;
 	unsigned char		codage;
 	unsigned char		lable;
-}						t_op;
+};
 
-typedef struct			s_core
+struct					s_core
 {
 	unsigned char		*arena;
+	int					carrs_num;
 	int					last_check;
 	int					num_pl;
 	int					dump;
@@ -59,21 +68,25 @@ typedef struct			s_core
 	int					num_lives;
 	int					cycle_to_die;
 	int					n_check;
-	struct s_op			op_tab[17];
-	struct player_s		*players;
-	struct carriage_s	*carrs;
-}						t_core;
+	int					visual_flag;
+	t_op				op_tab[17];
+	t_player			*players;
+	t_carriage			*carrs;
+	t_win				*visual;
+};
 
-typedef struct			player_s
+struct					s_player
 {
 	int					number;
 	char				prog_name[PROG_NAME_LENGTH + 1];
 	char				comment[COMMENT_LENGTH + 1];
 	unsigned char		code[CHAMP_MAX_SIZE];
 	unsigned int		length;			//длина исполняемого кода//
-	struct player_s		*next;
-}						player_t;
+	short				col_pair;
+	t_player			*next;
+};
 
 void					make_core2(t_core *a);
+void					print_arena(t_core *a);
 
 #endif
