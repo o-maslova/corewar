@@ -13,12 +13,15 @@ static void				print_info2(t_core *a, int row)
 	tmp = a->players;
 	while (tmp)
 	{
-		mvwprintw(VIS->info_win, (row += 2), 4, "Player -%d : ", ++i);
+		mvwprintw(VIS->info_win, (row += 2), 4, "Player -%d : ", tmp->number);
 		// dprintf(g_fd, "player color = %d\n", VIS->clr[tmp->number - 1].st_clr);
 		wattron(VIS->info_win, COLOR_PAIR(VIS->clr[tmp->number - 1].st_clr));
 		wprintw(VIS->info_win, "%.*s", tmp->prog_name);
-		// wrefresh(VIS->info_win);
 		wattroff(VIS->info_win, COLOR_PAIR(VIS->clr[tmp->number - 1].st_clr));
+		mvwprintw(VIS->info_win, ++row, 6, "Last live :\t\t\t%-*d",
+		CLEAR_LINE, a->n[i]);
+		mvwprintw(VIS->info_win, ++row, 6, "Lives in current period :\t\t%-*d",
+		CLEAR_LINE, a->live_in_p[i++]);
 		tmp = tmp->next;
 	}
 	// wattron(VIS->info_win, COLOR_PAIR(COLOR_WHITE) | A_BOLD);
@@ -65,11 +68,11 @@ void	print_info_frame(t_core *a)
 	mvwprintw(VIS->info_win, row, 4, "Cycles/second limit :\t%-*d", CLEAR_LINE, VIS->c_per_s);
 	mvwprintw(VIS->info_win, (row += 3), 4, "Cycle :\t\t%-*d",
 	CLEAR_LINE, (a->n_cycles));
-	if (a->n_cycles - 1 == 3947 && tmp == 0)
-	{
-		print_arr(a);
-		tmp++;
-	}
+	// if (a->n_cycles - 1 == 3947 && tmp == 0)
+	// {
+	// 	print_arr(a);
+	// 	tmp++;
+	// }
 	mvwprintw(VIS->info_win, (row += 2), 4, "Processes :\t\t%-*d",
 	CLEAR_LINE, a->carrs_num);
 	// wattroff(VIS->info_win, COLOR_PAIR(COLOR_WHITE) | A_BOLD);
@@ -138,17 +141,21 @@ void		put_colors(t_core *a)
 			diff++;
 		// if (VIS->paint_arena[i].is_st > 0)
 		// 	VIS->paint_arena[i].default_clr = VIS->paint_arena[i].color;
-		VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr;
+		if (VIS->paint_arena[i].not_in_field == 0)
+			VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr;
+		tmp = search_carriage(a, i);
 		if (VIS->paint_arena[i].i_live > 0)
 		{
+			if (VIS->paint_arena[i].color != VIS->paint_arena[i].default_clr)
+				VIS->paint_arena[i].color = VIS->paint_arena[i].color + 1;
+			else
+				VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr + 1;
 			// dprintf(g_fd, "LIVE\n");
 			// dprintf(g_fd, "%d\n", VIS->paint_arena[i].default_clr);
-			VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr + 1;
 		}
-		tmp = search_carriage(a, i);
-		if (tmp)
+		else if (tmp)
 		{
-			pl = -tmp->player;
+			// pl = -tmp->player;
 			if (VIS->paint_arena[i].default_clr == VIS->clr[COLOR_NUM - 1].st_clr)
 				VIS->paint_arena[i].color = VIS->clr[COLOR_NUM - 1].c_clr;
 			else
