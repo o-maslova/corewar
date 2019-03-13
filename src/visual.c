@@ -141,22 +141,31 @@ void		put_colors(t_core *a)
 		VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr;
 		if (VIS->paint_arena[i].i_live > 0)
 		{
-			dprintf(g_fd, "LIVE\n");
-			dprintf(g_fd, "%d\n", VIS->paint_arena[i].default_clr);
+			// dprintf(g_fd, "LIVE\n");
+			// dprintf(g_fd, "%d\n", VIS->paint_arena[i].default_clr);
 			VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr + 1;
 		}
 		tmp = search_carriage(a, i);
 		if (tmp)
 		{
 			pl = -tmp->player;
-			if (i > tmp->len_of_player + ((diff - 1) * PLAYER_FIELD) && VIS->paint_arena[i].default_clr == VIS->clr[COLOR_NUM - 1].st_clr)
-			{
-				dprintf(g_fd, "i = %d, len_of_player %d\n", i, tmp->len_of_player);
-				dprintf(g_fd, "(diff - 1) * PLAYER_FIELD) %d\n", (diff - 1) * PLAYER_FIELD);
+			if (VIS->paint_arena[i].default_clr == VIS->clr[COLOR_NUM - 1].st_clr)
 				VIS->paint_arena[i].color = VIS->clr[COLOR_NUM - 1].c_clr;
-			}
 			else
-				VIS->paint_arena[i].color = VIS->clr[pl - 1].c_clr;
+				VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr - 1;
+			
+			// if (i > tmp->len_of_player + ((diff - 1) * PLAYER_FIELD) && VIS->paint_arena[i].default_clr == VIS->clr[COLOR_NUM - 1].st_clr)
+			// {
+			// 	// dprintf(g_fd, "i = %d, len_of_player %d\n", i, tmp->len_of_player);
+			// 	// dprintf(g_fd, "(diff - 1) * PLAYER_FIELD) %d\n", (diff - 1) * PLAYER_FIELD);
+			// 	VIS->paint_arena[i].color = VIS->clr[COLOR_NUM - 1].c_clr;
+			// }
+			// else
+			// {
+			// 	dprintf(g_fd, "CYCLE: %d\n", a->n_cycles);
+			// 	dprintf(g_fd, "pos: %d, VIS->clr[pl - 1].c_clr %d\n", i, VIS->clr[pl - 1].c_clr);
+			// 	VIS->paint_arena[i].color = VIS->clr[pl - 1].c_clr;
+			// }
 		}
 		
 	}
