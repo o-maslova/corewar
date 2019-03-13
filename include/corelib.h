@@ -27,7 +27,7 @@
 
 struct					s_carriage
 {
-	unsigned int		player;			//номер игрока, породившего каретку//
+	int					player;			//номер игрока, породившего каретку//
 	int					len_of_player;
 	int					f;				//номер функции, которую будет выполнять//
 	int					jump;			//количество байт, которые нужно будет «перешагнуть», чтобы оказаться на следующей операции//
@@ -57,11 +57,13 @@ struct	 				s_op
 struct					s_core
 {
 	unsigned char		*arena;
+	unsigned char		color[MEM_SIZE];
 	int					carrs_num;
 	int					last_check;
 	int					num_pl;
 	int					dump;
 	int					n[MAX_PLAYERS];
+	int					live_in_p[MAX_PLAYERS];
 	int					last_say_live;
 	int					n_cycles;
 	int					max_checks;
@@ -82,7 +84,6 @@ struct					s_player
 	char				comment[COMMENT_LENGTH + 1];
 	unsigned char		code[CHAMP_MAX_SIZE];
 	unsigned int		length;			//длина исполняемого кода//
-	short				col_pair;
 	t_player			*next;
 };
 

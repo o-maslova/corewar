@@ -4,11 +4,11 @@ INC_DIR = ./include/
 LIB_DIR = ./libft/
 # BIN_DIR = ./objects/
 
-CUR_FLAG = -lncurses -g
+CUR_FLAG =  -lncurses
 
 LIB = libft.a
 SRC = op.c \
-		main3.c \
+		main.c \
 		try.c
 
 INCLUDES = ./op.h ./corelib.h ./visualization.h

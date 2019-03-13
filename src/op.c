@@ -1,6 +1,6 @@
 #include "corelib.h"
 
-t_op    op_tab[17] =
+t_op	op_tab[17] =
 {
 	{"live", 1, {T_DIR}, 1, 10, "alive", 0, 4},
 	{"ld", 2, {T_DIR | T_IND, T_REG}, 2, 5, "load", 1, 4},

@@ -27,7 +27,7 @@ uint32_t	revers(uint32_t n)
 	return (b);
 }
 
-int	ft_type_codeage(t_core *arena, carriage_t *car, short *arg)
+int	ft_type_codeage(t_core *arena, t_carriage *car, short *arg)
 {
 	int i;
 	int error;
@@ -47,7 +47,7 @@ int	ft_type_codeage(t_core *arena, carriage_t *car, short *arg)
 	return (error);
 }
 
-int function_codage(t_core *arena, carriage_t *car, short *arg)
+int function_codage(t_core *arena, t_carriage *car, short *arg)
 {
 	int i;
 	int codage;
@@ -88,9 +88,9 @@ unsigned char	*ft_strncpy2(unsigned char *dst, const unsigned char *src, size_t 
 	return (dst);
 }
 
-void	free_p(player_t *p)
+void	free_p(t_player *p)
 {
-	player_t	*p2;
+	t_player	*p2;
 	while (p)
 	{
 		p2 = p->next;
@@ -99,34 +99,34 @@ void	free_p(player_t *p)
 	}
 }
 
-void	ft_error(player_t *p, int t, char *s)
+void	ft_error(t_player *p, int t, char *s)
 {
-	player_t	*n;
+	t_player	*n;
 
 	free_p(p);
 	if (t == 0)
-		printf("Error: file %s must have .cor type\n", s);
+		//printf("Error: file %s must have .cor type\n", s);
 	if (t == 1)
-		printf("Error: file %s not valide\n", s);
+		//printf("Error: file %s not valide\n", s);
 	if (t == 2)
-		printf("Error: file %s has too large a code. Max size: %i bytes\n", s, CHAMP_MAX_SIZE);
+		//printf("Error: file %s has too large a code. Max size: %i bytes\n", s, CHAMP_MAX_SIZE);
 	if (t == 3)
-		printf("Error: exec code file %s not valide\n", s);
+		//printf("Error: exec code file %s not valide\n", s);
 	if (t == 4)
-		printf("Error: %s\n", s);
+		//printf("Error: %s\n", s);
 	if (t < 0)
-		printf("Error: can't find file %s, or access is denied\n", s);
+		//printf("Error: can't find file %s, or access is denied\n", s);
 	exit(0);
 }
 
-void	free_c(player_t *p, carriage_t *c, char *s)
+void	free_c(t_player *p, t_carriage *c, char *s)
 {
-	carriage_t *h;
+	t_carriage *h;
 
 	while (c)
 	{
 		h = c->next;
-		printf("%s\n", p->prog_name);
+		//printf("%s\n", p->prog_name);
 		free(c);
 		c = h;
 	}
@@ -135,8 +135,8 @@ void	free_c(player_t *p, carriage_t *c, char *s)
 
 void	free_all(t_core *a, char *s)
 {
-	carriage_t	*c;
-	player_t	*p;
+	t_carriage	*c;
+	t_player	*p;
 
 	c = a->carrs;
 	p = a->players;
@@ -151,12 +151,12 @@ int		check_ret(int *t, int i)
 	return (-1);
 }
 
-player_t	*make_p2(player_t *p, int t, char *s)
+t_player	*make_p2(t_player *p, int t, char *s)
 {
-	player_t	*n;
-	player_t	*b;
+	t_player	*n;
+	t_player	*b;
 
-	if (!(n = malloc(sizeof(player_t) * 1)))
+	if (!(n = malloc(sizeof(t_player) * 1)))
 		ft_error(p, 4, "malloc error");
 	if (s)
 		ft_strncpy(n->prog_name, s, PROG_NAME_LENGTH + 1);
@@ -170,7 +170,7 @@ player_t	*make_p2(player_t *p, int t, char *s)
 	return (n);
 }
 
-int		make_p3(int *t, player_t *pl, unsigned char *buff, uint32_t p)
+int		make_p3(int *t, t_player *pl, unsigned char *buff, uint32_t p)
 {
 	int i;
 
@@ -187,7 +187,7 @@ int		make_p3(int *t, player_t *pl, unsigned char *buff, uint32_t p)
 	return (1);
 }
 
-int		make_p(char *s, int *t, int o, player_t *pl)
+int		make_p(char *s, int *t, int o, t_player *pl)
 {
 	size_t			i;
 	uint32_t		*p;
@@ -212,7 +212,7 @@ int		make_p(char *s, int *t, int o, player_t *pl)
 	return (make_p3(t, pl, buff, p[0]));
 }
 
-int		check_p2(char *s, int *t, int o, player_t *pl)
+int		check_p2(char *s, int *t, int o, t_player *pl)
 {
 	int	i;
 	int	p;
@@ -222,6 +222,8 @@ int		check_p2(char *s, int *t, int o, player_t *pl)
 		return (2);
 	if (ft_strcmp(s, "-d") == 0 && o == -1)
 		return (4);
+	if (ft_strcmp(s, "-v") == 0 && o == -1)
+		return (8);
 	p = -1;
 	while (s[++i] && p == -1)
 	{
@@ -235,7 +237,7 @@ int		check_p2(char *s, int *t, int o, player_t *pl)
 	return (p);
 }
 
-int		flag_n(char **m, int o, int *t, player_t *p)
+int		flag_n(char **m, int o, int *t, t_player *p)
 {
 	int	i;
 
@@ -261,7 +263,7 @@ int		flag_d(char **m, int o, int *t)
 	return (i);
 }
 
-int			move_p(player_t *m, player_t *n, int t, player_t *p)
+int			move_p(t_player *m, t_player *n, int t, t_player *p)
 {
 	int			y;
 	int			u;
@@ -294,11 +296,11 @@ int			move_p(player_t *m, player_t *n, int t, player_t *p)
 	return (1);
 }
 
-player_t	*move_p2(player_t *o, int *c)
+t_player	*move_p2(t_player *o, int *c)
 {
 	int		y;
 	int		l;
-	player_t *p;
+	t_player *p;
 
 	y = 1;
 	l = -1;
@@ -320,11 +322,11 @@ player_t	*move_p2(player_t *o, int *c)
 	return (p);
 }
 
-player_t	*player_numb(player_t *p, int *c, int t)
+t_player	*player_numb(t_player *p, int *c, int t)
 {
-	player_t	*n;
-	player_t	*m;
-	player_t	*o;
+	t_player	*n;
+	t_player	*m;
+	t_player	*o;
 
 	n = p->next;
 	o = p;
@@ -362,7 +364,7 @@ void	null_arena(unsigned char *a)
 	}
 }
 
-void		write_player(player_t *p, unsigned char *a, int t)
+void		write_player(t_player *p, unsigned char *a, int t)
 {
 	int	i;
 
@@ -375,12 +377,13 @@ void		write_player(player_t *p, unsigned char *a, int t)
 	}
 }
 
-carriage_t *make_carret2(player_t *p, int i, int l)
+t_carriage *make_carret2(t_player *p, int i, int l)
 {
-	carriage_t	*c;
+	t_carriage	*c;
 
-	c = malloc(sizeof(carriage_t) * 1);
+	c = ft_memalloc(sizeof(t_carriage) * 1);
 	c->player = (0xffffffff ^ p->number) + 1;
+	c->len_of_player = p->length;
 	read_byte4((unsigned char *)&c->player, 0, 0, c->r[0]);
 	c->pos = l;
 	c->jump = 0;
@@ -389,13 +392,12 @@ carriage_t *make_carret2(player_t *p, int i, int l)
 	c->live = 0;
 	c->number = i;
 	c->f = 0;
-	
 	return (c);
 }
 
-carriage_t *make_carret(unsigned char *a, player_t *p, carriage_t *c, int t)
+t_carriage *make_carret(unsigned char *a, t_player *p, t_carriage *c, int t)
 {
-	carriage_t *o;
+	t_carriage *o;
 	int			i;
 	int			l;
 
@@ -417,30 +419,28 @@ void	bit_print(int i)
 	if (i < 1)
 		return ;
 	bit_print(i / 2);
-	printf("%i", i % 2);
+	//printf("%i", i % 2);
 }
 
-int		byte_cal(short *a, int i, short *s)
+int		byte_cal(short *a, int i, t_core *s, t_carriage *c)
 {
 	int	p;
 	int	t;
 
 	p = 0;
 	t = 0;
-	while (p < 3)
+	while (p < s->op_tab[c->f - 1].nb_args)
 	{
 		if (a[p] == 1)
+		{
 			t += 1;
-		if (s && a[p] == 1)
-			s[p] = 1;
+			if (s->arena[(c->pos + t + 1) % MEM_SIZE] - 1 > 15)
+				c->error++;
+		}
 		if (a[p] == 2)
 			t += i;
-		if (s && a[p] == 2)
-			s[p] = i;
 		if (a[p] == 4)
 			t += 2;
-		if (s && a[p] == 4)
-			s[p] = 4;
 		p++;
 	}
 	return (t);
@@ -508,315 +508,13 @@ void	write_reg(unsigned char *r, unsigned char *c, int p, int t)
 	}
 }
 
-void	f1(t_core *a, carriage_t *c)
-{
-	int	i;
-
-	c->live = a->n_cycles;
-	i = 0;
-	read_byte2(a->arena, 0, c->pos + 1, (unsigned char *)&i);
-	if (i <= a->num_pl && i > 0)
-		a->last_say_live = i;
-	c->jump = 3;
-}
-
-void	f2(t_core *a, carriage_t *c, int i, int h)
-{
-	short	arg[3];
-
-	i = function_codage(a, c, arg); //если верно - нулюет i//
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, NULL) + 2;
-	h = a->arena[(c->pos + 6) % MEM_SIZE] - 1;
-	if (arg[1] == 3)
-		h = a->arena[(c->pos + 4) % MEM_SIZE] - 1;
-	if (i == 1 || h >= REG_NUMBER)
-		return ;
-	if (arg[0] == 4)
-	{
-		write_reg(c->r[h], a->arena, 0, c->pos + 2);
-		return ;
-	}
-	read_byte2(a->arena, 0, c->pos + 2, (unsigned char *)&i);
-	if (i % IDX_MOD != i)
-	{
-		i %= IDX_MOD;
-		read_byte2((unsigned char *)&i, c->pos + 2, 0, a->arena);
-	}
-	write_reg(c->r[h], a->arena, 0, c->pos + i);
-	c->carry = 0;
-	if (i == 0)
-		c->carry = 1;
-}
-
-void	f3(t_core *a, carriage_t *c)
-{
-	short	arg[3];
-	int		i;
-	int		h;
-	int		p;
-
-	i = function_codage(a, c, arg);
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, NULL) + 2;
-	h = a->arena[(c->pos + 3) % MEM_SIZE] - 1;
-	p = a->arena[(c->pos + 2) % MEM_SIZE] - 1;
-	if (i == 1 || p >= REG_NUMBER || (arg[1] == 1 && h >= REG_NUMBER ))
-		return ;
-	if (arg[1] == 1)
-	{
-		write_reg(c->r[h], c->r[p], 0, 0);
-		return ;
-	}
-	read_byte2(a->arena, 0, c->pos + 3, (unsigned char *)&i);
-	i %= IDX_MOD;
-	write_reg(a->arena, c->r[p], c->pos + i, -1);
-}
-
-void	f4(t_core *a, carriage_t *c)
-{
-	short			arg[3];
-	int				g;
-	unsigned int	i;
-	unsigned int	h;
-	int				p;
-
-	p = 0;
-	g = function_codage(a, c, arg);
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, NULL) + 2;
-	i = a->arena[(c->pos + 2) % MEM_SIZE] - 1;
-	p = a->arena[(c->pos + 3) % MEM_SIZE] - 1;
-	h = a->arena[(c->pos + 4) % MEM_SIZE] - 1;
-	if (g == 1 || h >= REG_NUMBER || i >= REG_NUMBER || p >= REG_NUMBER)
-		return ;
-	read_byte4(c->r[i], 0, 0, (unsigned char *)&i);
-	read_byte4(c->r[p], 0, 0, (unsigned char *)&p);
-	i = i + p;
-	p = 0;
-	while (p < REG_SIZE)
-		c->r[h][p++] = 0;
-	read_byte4(c->r[h], 0, 0, (unsigned char *)&i);
-	c->carry = 0;
-	if (i == 0)
-		c->carry = 1;
-}
-
-void	f5(t_core *a, carriage_t *c)
-{
-	short			arg[3];
-	int				g;
-	unsigned int	i;
-	unsigned int	h;
-	int				p;
-
-	p = 0;
-	g = function_codage(a, c, arg);
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, NULL) + 2;
-	i = a->arena[(c->pos + 2) % MEM_SIZE] - 1;
-	p = a->arena[(c->pos + 3) % MEM_SIZE] - 1;
-	h = a->arena[(c->pos + 4) % MEM_SIZE] - 1;
-	if (g == 1 || h >= REG_NUMBER || i >= REG_NUMBER || p >= REG_NUMBER)
-		return ;
-	read_byte4(c->r[i], 0, 0, (unsigned char *)&i);
-	read_byte4(c->r[p], 0, 0, (unsigned char *)&p);
-	i = i - p;
-	p = 0;
-	while (p < REG_SIZE)
-		c->r[h][p++] = 0;
-	read_byte4(c->r[h], 0, 0, (unsigned char *)&i);
-	c->carry = 0;
-	if (i == 0)
-		c->carry = 1;
-}
-
-void	f9(t_core *a, carriage_t *c)
-{
-	int		i;
-
-	if (c->pos + 2 >= MEM_SIZE) //если это край карты, и невозможно считать два байта для Т_ДИР - ошибка//
-	{
-		c->jump = 3;
-		return ;
-	}
-	if (c->carry == 0)   //если каретка на false - не прыгаем//
-		c->jump = 3;
-	else
-	{
-
-		read_byte2(a->arena, 0, c->pos + 1, (unsigned char *)&i);
-		c->jump = i % IDX_MOD;
-	}
-}
-
-void	f10(t_core *a, carriage_t *c)
-{
-	short	arg[3];
-	short	size[3];
-	int		p;
-	int		i;
-	int		h;
-
-	i = function_codage(a, c, arg);
-	p = 0;
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, size) + 2;
-	h = a->arena[(c->pos + 2 + size[0] + size[1]) % MEM_SIZE] - 1;
-	if (i == 1 || h >= REG_NUMBER)
-		return ;
-	if (arg[0] == 1 && a->arena[(c->pos + 2) % MEM_SIZE] - 1 >= REG_NUMBER)
-		read_byte4(c->r[a->arena[(c->pos + 2) % MEM_SIZE]], 0, 0, (unsigned char *)&i);
-	else if (arg[0] == 1)
-		return ;
-	else
-		read_byte2(a->arena, 0, c->pos + 2, (unsigned char *)&i);
-	if (arg[1] == 1 && a->arena[(c->pos + 2 + size[0]) % MEM_SIZE] - 1 >= REG_NUMBER)
-		read_byte4(c->r[a->arena[(c->pos + 2 + size[0]) % MEM_SIZE]], 0, 0, (unsigned char *)&p);
-	else if (arg[1] == 1)
-		return ;
-	else
-		read_byte2(a->arena, 0, c->pos + 2 + size[0], (unsigned char *)&p);
-	if (arg[0] == 4)
-		read_byte4(a->arena, 0, c->pos + (i % IDX_MOD), (unsigned char *)&i);
-	i = (i + p) % IDX_MOD;
-	write_reg(c->r[h], a->arena, 0, c->pos + i);
-}
-
-void	f11(t_core *a, carriage_t *c)
-{
-	short	arg[3];
-	short	size[3];
-	int		p;
-	int		i;
-	int		h;
-
-	i = function_codage(a, c, arg);
-	p = 0;
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, size) + 2;
-	h = a->arena[(c->pos + 2) % MEM_SIZE] - 1;
-	if (i == 1 || h >= REG_NUMBER)
-		return ;
-	if (arg[1] == 1 && a->arena[(c->pos + 3) % MEM_SIZE] - 1 >= REG_NUMBER)
-		read_byte4(c->r[a->arena[(c->pos + 3) % MEM_SIZE]], 0, 0, (unsigned char *)&i);
-	else if (arg[1] == 1)
-		return ;
-	else
-		read_byte2(a->arena, 0, c->pos + 3, (unsigned char *)&i);
-	if (arg[2] == 1  && a->arena[(c->pos + 3 + size[1]) % MEM_SIZE] - 1 >= REG_NUMBER)
-		read_byte4(c->r[a->arena[(c->pos + 3 + size[1]) % MEM_SIZE]], 0, 0, (unsigned char *)&p);
-	else if (arg[2] == 1)
-		return ;
-	else
-		read_byte2(a->arena, 0, c->pos + 3 + size[1], (unsigned char *)&p);
-	if (arg[1] == 4)
-		read_byte4(a->arena, 0, c->pos + (i % IDX_MOD), (unsigned char *)&i);
-	i = (i + p) % IDX_MOD;
-	p = 0;
-	read_byte4(c->r[h], c->pos + i, 0, a->arena);
-}
-
-void	f12_15_duplicate_carret(carriage_t *c, t_core *a, int pos)
-{
-	carriage_t	*new;
-	int			i;
-	int			p;
-
-	if (!(new = malloc(sizeof(carriage_t))))
-		free_all(a, "malloc error");
-	new->player = c->player;
-	new->f = 0;
-	new->jump = 0;
-	new->live = c->live;
-	new->cast = 0;
-	new->number = a->carrs->number + 1;
-	new->pos = (c->pos + pos) % MEM_SIZE;
-	new->carry = c->carry;
-	i = 0;
-	while (i < REG_NUMBER)
-	{
-		p = 0;
-		while (++p <= REG_SIZE)
-			new->r[i][p -1] = c->r[i][p - 1];
-		i++;
-	}
-	new->next = a->carrs;
-	a->carrs = new;
-}
-
-void	f12_15(t_core *a, carriage_t *c, int p)
-{
-	int		i;
-
-	c->jump = 3;
-	i = 0;
-	read_byte2(a->arena, 0, c->pos + 1, (unsigned char *)&i);
-	if (p == 1)
-		f12_15_duplicate_carret(c, a, i % IDX_MOD);
-	else
-		f12_15_duplicate_carret(c, a, i);
-}
-
-void	f13(t_core *a, carriage_t *c)
-{
-	short	arg[3];
-	short	size[3];
-	int		i;
-	int		h;
-
-	i = function_codage(a, c, arg);
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, size) + 2;
-	h = a->arena[(c->pos + size[0] + 2) % MEM_SIZE] - 1;
-	if (i == 1 || h >= REG_NUMBER)
-		return ;
-	if (arg[0] == 4)
-	{
-		write_reg(c->r[h], a->arena, 0, c->pos + 2);
-		return ;
-	}
-	read_byte2(a->arena, 0, c->pos + 2, (unsigned char *)&i);
-	write_reg(c->r[h], a->arena, 0, c->pos + i);
-	c->carry = 0;
-	if (i == 0)
-		c->carry = 1;
-}
-
-void	f14(t_core *a, carriage_t *c)
-{
-	short	arg[3];
-	short	size[3];
-	int		i;
-	int		p;
-	int		h;
-
-	i = function_codage(a, c, arg);
-	p = 0;
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, size) + 2;
-	h = a->arena[(c->pos + 2 + size[0] + size[1]) % MEM_SIZE] - 1;
-	if (i == 1 || h >= REG_NUMBER)
-		return ;
-	if (arg[0] == 1 && a->arena[(c->pos + 2) % MEM_SIZE] - 1 >= REG_NUMBER)
-		read_byte4(c->r[a->arena[(c->pos + 2) % MEM_SIZE]], 0, 0, (unsigned char *)&i);
-	else if (arg[0] == 1)
-		return ;
-	else
-		read_byte2(a->arena, 0, c->pos + 2, (unsigned char *)&i);
-	if (arg[1] == 1 && a->arena[(c->pos + 2 + size[0]) % MEM_SIZE] - 1 >= REG_NUMBER)
-		read_byte4(c->r[a->arena[(c->pos + 2 + size[0] % MEM_SIZE)]], 0, 0, (unsigned char *)&p);
-	else if (arg[1] == 1)
-		return ;
-	else
-		read_byte2(a->arena, 0, c->pos + 2 + size[0], (unsigned char *)&p);
-	if (arg[0] == 4)
-		read_byte4(a->arena, 0, c->pos + (i % IDX_MOD), (unsigned char *)&i);
-	i = i + p;
-	write_reg(c->r[h], a->arena, 0, c->pos + i);
-}
-
-////////////////////////////////
-
-short get_pos_arg(t_core *a, carriage_t *c, short arg[3], short num) /// считает позицию на арене аргумента num
+short get_pos_arg(t_core *a, t_carriage *c, short arg[3], short num) /// считает позицию на арене аргумента num
 {
 	unsigned int ar;
 	short	pos;
 
 	ar = 0;
-	pos = c->pos + 2;
+	pos = c->pos + 1 + a->op_tab[c->f - 1].codage;
 	while (ar < num)
 	{
 		if (arg[ar] == 1)
@@ -830,9 +528,9 @@ short get_pos_arg(t_core *a, carriage_t *c, short arg[3], short num) /// счи�
 	return (pos);
 }
 
-unsigned int get_args(t_core *a, carriage_t *c, short arg[3], short num)//// в зависимости от типа аргумента считывает его байты с арены/регистра
+int get_args(t_core *a, t_carriage *c, short arg[3], short num)//// в зависимости от типа аргумента считывает его байты с арены/регистара
 {
-	unsigned int ar;
+	int ar;
 	short	pos;
 
 	ar = 0;
@@ -849,17 +547,157 @@ unsigned int get_args(t_core *a, carriage_t *c, short arg[3], short num)//// в 
 	}
 	else if (arg[num] == 2)
 	{
-		if (a->op_tab[c->f - 1]. lable == 4)
+		if (a->op_tab[c->f - 1].lable == 4)
 			read_byte4(a->arena, 0, pos, (unsigned char *)&ar);
-		else
+		else{
 			read_byte2(a->arena, 0, pos, (unsigned char *)&ar);
+			if (ar > 0x8000)
+				ar = ar - 0xffff - 1;
+		}
 	}
 	else if (arg[num] == 4)
+	{
 		read_byte2(a->arena, 0, pos, (unsigned char *)&ar);
+		if (ar > 0x8000)
+			ar = ar - 0xffff - 1;
+	}
 	return (ar);
 }
 
-void	f6(t_core *a, carriage_t *c)
+void	f1(t_core *a, t_carriage *c)
+{
+	int		i;
+	short	p[1];
+
+	c->live = a->n_cycles;
+	p[0] = 2;
+	i = get_args(a, c, p, 0);
+	i *= -1;
+	if (i <= a->num_pl && i > 0)
+	{
+		a->visual->paint_arena[c->pos].i_live = 50;
+		a->live_in_p[i - 1] += 1;
+		// printf("f1: player #%i\n", i);
+		a->last_say_live = i;
+		a->n[i - 1] = a->n_cycles;
+		a->num_lives++;
+	}
+	//else
+		//printf("f1: %i - error\n", i);
+	c->jump = 5;
+}
+
+void	f2_f13(t_core *a, t_carriage *c, int f)
+{
+	short	arg[3];
+	int		i;
+	int		h;
+
+	c->error = function_codage(a, c, arg);
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, a, c) + 2;
+	h = a->arena[get_pos_arg(a, c, arg, 1) % MEM_SIZE] - 1;
+	if (c->error != 0)
+		return ;
+	i = get_args(a, c, arg, 0);
+	if (arg[0] == 4)
+	{
+		if (f == 0 && i % IDX_MOD != i)
+		{
+			i %= IDX_MOD;
+			read_byte4((unsigned char *)&i, c->pos + 2, 0, a->arena);
+		}
+		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + i) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&i);
+	}
+	read_byte4((unsigned char *)&i, 0, 0, c->r[h]);
+	c->carry = 0;
+	if (i == 0)
+		c->carry = 1;
+	//printf("f2: r%i = %i\n", h + 1, i);
+}
+
+void	f3(t_core *a, t_carriage *c)
+{
+	short	arg[3];
+	int		tmp;
+	int		i;
+	int		h;
+
+	tmp = -1;
+	c->error = function_codage(a, c, arg);
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, a, c) + 2;
+	if (c->error != 0)
+		return ;
+	i = a->arena[get_pos_arg(a, c, arg, 0) % MEM_SIZE] - 1;
+	if (arg[1] == 1)
+	{
+		h = a->arena[get_pos_arg(a, c, arg, 1) % MEM_SIZE] - 1;
+		write_reg(c->r[h], c->r[i], 0, 0);
+		// printf("f3: with r%i to r%i write '%.2x%.2x%.2x%.2x'\n", i, h, c->r[i][0], c->r[i][1], c->r[i][2], c->r[i][3]);
+		return ;
+	}
+	h = get_args(a, c, arg, 1);
+	h %= IDX_MOD;
+	write_reg(a->arena, c->r[i], (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE, 0);
+	while (++tmp < 4)
+	{
+		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].is_st = 50;
+		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].default_clr =
+		VIS->clr[-(c->player) - 1].st_clr;;
+	}
+	//printf("f3: with r%i to a[%i] write '%.2x%.2x%.2x%.2x'\n", i, c->pos + h, c->r[i][0], c->r[i][1], c->r[i][2], c->r[i][3]);
+}
+
+void	f4(t_core *a, t_carriage *c)
+{
+	short			arg[3];
+	unsigned int	i;
+	unsigned int	h;
+	int				p;
+
+	c->error = function_codage(a, c, arg);
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, a, c) + 2;
+	p = a->arena[get_pos_arg(a, c, arg, 2) % MEM_SIZE] - 1;
+	if (c->error != 0)
+		return ;
+	i = get_args(a, c, arg, 0);
+	h = get_args(a, c, arg, 1);
+	i = i + h;
+	//printf("f4: %i + %i = %i to r[%i]\n", i - h, h, i, p);
+	h = 0;
+	while (h < REG_SIZE)
+		c->r[p][h++] = 0;
+	read_byte4((unsigned char *)&i, 0, 0, c->r[p]);
+	c->carry = 0;
+	if (i == 0)
+		c->carry = 1;
+}
+
+void	f5(t_core *a, t_carriage *c)
+{
+	short			arg[3];
+	unsigned int	i;
+	unsigned int	h;
+	int				p;
+
+	c->error = function_codage(a, c, arg);
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, a, c) + 2;
+	p = a->arena[get_pos_arg(a, c, arg, 2) % MEM_SIZE] - 1;
+	if (c->error != 0)
+		return ;
+	i = get_args(a, c, arg, 0);
+	h = get_args(a, c, arg, 1);
+	i = i - h;
+	//printf("f5: %i - %i = %i to r[%i]\n", i + h, h, i, p);
+	h = 0;
+	while (h < REG_SIZE)
+		c->r[p][h++] = 0;
+	read_byte4((unsigned char *)&i, 0, 0, c->r[p]);
+	c->carry = 0;
+	if (i == 0)
+		c->carry = 1;
+}
+
+void	f6(t_core *a, t_carriage *c)
 {
 	short			arg[3];
 	unsigned int	i;
@@ -868,24 +706,25 @@ void	f6(t_core *a, carriage_t *c)
 
 	p = 0;
 	c->error = function_codage(a, c, arg);
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, NULL) + 2;
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, a, c) + 2;
 	i = get_args(a, c, arg, 0);
 	p = get_args(a, c, arg, 1);
 	h = a->arena[(get_pos_arg(a, c, arg, 2)) % MEM_SIZE] - 1;
 	if (c->error != 0 || h >= REG_NUMBER)
 		return ;
+	//printf("f6: %i & %i = %i to r[%i]\n", i, p, i & p, h);
 	i = i & p;
 	p = 0;
 	while (p < REG_SIZE)
 		c->r[h][p++] = 0;
-	read_byte4(c->r[h], 0, 0, (unsigned char *)&i);
+	read_byte4((unsigned char *)&i, 0, 0, c->r[h]);
 	c->carry = 0;
 	if (i == 0)
 		c->carry = 1;
 }
 
 
-void	f7(t_core *a, carriage_t *c)
+void	f7(t_core *a, t_carriage *c)    ///3820
 {
 	short			arg[3];
 	unsigned int	i;
@@ -894,24 +733,25 @@ void	f7(t_core *a, carriage_t *c)
 
 	p = 0;
 	c->error = function_codage(a, c, arg);
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, NULL) + 2;
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, a, c) + 2;
 	i = get_args(a, c, arg, 0);
 	p = get_args(a, c, arg, 1);
 	h = a->arena[(get_pos_arg(a, c, arg, 2)) % MEM_SIZE] - 1;
 	if (c->error != 0 || h >= REG_NUMBER)
 		return ;
+	//printf("f7: %i | %i = %i to r[%i]\n", i, p, i | p, h);
 	i = i | p;
 	p = 0;
 	while (p < REG_SIZE)
 		c->r[h][p++] = 0;
-	read_byte4(c->r[h], 0, 0, (unsigned char *)&i);
+	read_byte4((unsigned char *)&i, 0, 0, c->r[h]);
 	c->carry = 0;
 	if (i == 0)
 		c->carry = 1;
 }
 
 
-void	f8(t_core *a, carriage_t *c)
+void	f8(t_core *a, t_carriage *c)
 {
 	short			arg[3];
 	unsigned int	i;
@@ -920,62 +760,215 @@ void	f8(t_core *a, carriage_t *c)
 
 	p = 0;
 	c->error = function_codage(a, c, arg);
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, NULL) + 2;
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, a, c) + 2;
 	i = get_args(a, c, arg, 0);
 	p = get_args(a, c, arg, 1);
 	h = a->arena[(get_pos_arg(a, c, arg, 2)) % MEM_SIZE] - 1;
 	if (c->error != 0 || h >= REG_NUMBER)
 		return ;
+	//printf("f7: %i ^ %i = %i to r[%i]\n", i, p, i ^ p, h);
 	i = i ^ p;
 	p = 0;
 	while (p < REG_SIZE)
 		c->r[h][p++] = 0;
-	read_byte4(c->r[h], 0, 0, (unsigned char *)&i);
+	read_byte4((unsigned char *)&i, 0, 0, c->r[h]);
 	c->carry = 0;
 	if (i == 0)
 		c->carry = 1;
 }
 
+void	f9(t_core *a, t_carriage *c)
+{
+	int		i;
+	short	p[1];
 
-//////////////bulakh
+	c->jump = 3;
+	i = 0;
+	p[0] = 2;
+	if (c->carry != 0)
+	{
+		i = get_args(a, c, p, 0);
+		c->jump = i % IDX_MOD;
+		//printf("f9: jump = %i\n", c->jump);
+	}
+	//else
+		//printf("f9: carry = 0\n");
+}
 
-void	f16(t_core *a, carriage_t *c)
+void	f10(t_core *a, t_carriage *c)
+{
+	short	arg[3];
+	int		p;
+	int		i;
+	int		h;
+
+	c->error = function_codage(a, c, arg);
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, a, c) + 2;
+	p = a->arena[get_pos_arg(a, c, arg, 2) % MEM_SIZE] - 1;
+	if (c->error != 0)
+		return ;
+	i = get_args(a, c, arg, 0);
+	h = get_args(a, c, arg, 1);
+	if (arg[0] == 4)
+		read_byte4(a->arena, 0, (MEM_SIZE + c->pos + (i % IDX_MOD)) % MEM_SIZE, (unsigned char *)&i);
+	//printf("f10: with a[%i] (%i + %i) to r[%i] write ", i + h, i, h, p);
+	i = (i + h) % IDX_MOD;
+	write_reg(c->r[p], a->arena, 0, (MEM_SIZE + c->pos + i) % MEM_SIZE);
+	//printf("'%.2x%.2x%.2x%.2x'\n", c->r[p][0], c->r[p][1], c->r[p][2], c->r[p][3]);
+}
+
+void	f11(t_core *a, t_carriage *c)
+{
+	short	arg[3];
+	int		tmp;
+	int		i;
+	int		h;
+	int		p;
+
+	tmp = -1;
+	c->error = function_codage(a, c, arg);
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, a, c) + 2;
+	if (c->error != 0)
+		return ;
+	i = a->arena[get_pos_arg(a, c, arg, 0) % MEM_SIZE] - 1;
+	h = get_args(a, c, arg, 1);
+	p = get_args(a, c, arg, 2);
+	if (arg[1] == 4)
+		read_byte4(a->arena, 0, c->pos + (h % IDX_MOD), (unsigned char *)&h);
+	h = (h + p) % IDX_MOD;
+	write_reg(a->arena, c->r[i], (MEM_SIZE + c->pos + h) % MEM_SIZE, 0);
+	while (++tmp < 4)
+	{
+		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].is_st = 50;
+		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].default_clr = 
+		VIS->clr[-(c->player) - 1].st_clr;
+		// dprintf(g_fd, "POSITION	 %d, player = %d\n", (MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE, c->player);
+	}
+	//printf("f11: with r%i write '%.2x%.2x%.2x%.2x' to a[%i]\n", i + 1, c->r[i][0], c->r[i][1], c->r[i][2], c->r[i][3], c->pos + h);
+}
+
+void	f12_f15_duplicate_carret(t_carriage *c, t_core *a, int pos)
+{
+	t_carriage	*new;
+	int			i;
+	int			p;
+
+	if (!(new = malloc(sizeof(t_carriage))))
+		free_all(a, "malloc error");
+	new->player = c->player;
+	new->len_of_player = c->len_of_player;
+	//new->f = 0;
+	new->jump = 0;
+	new->live = c->live;
+	new->cast = 0;
+	new->number = a->carrs->number + 1;
+	new->pos = (MEM_SIZE + (c->pos + pos) % MEM_SIZE) % MEM_SIZE;
+	new->f = a->arena[new->pos];
+	if (new->f < 17 && new->f > 0)
+		new->cast = a->op_tab[new->f - 1].cycle - 1;
+	else
+		new->cast = 0;
+	////printf("new pos = %i\n", new->pos);
+	new->carry = c->carry;
+	i = 0;
+	while (i < REG_NUMBER)
+	{
+		p = 0;
+		while (++p <= REG_SIZE)
+			new->r[i][p -1] = c->r[i][p - 1];
+		i++;
+	}
+	new->next = a->carrs;
+	a->carrs = new;
+}
+
+void	f12_f15(t_core *a, t_carriage *c, int p)
+{
+	int		i;
+	short	g[1];
+	t_carriage *c2;
+
+	c->jump = 3;
+	g[0] = 2;
+	i = get_args(a, c, g, 0);
+	if (p == 1)
+	{
+		f12_f15_duplicate_carret(c, a, i % IDX_MOD);
+		//printf("f:12 new carret with pos = %i\n", i % IDX_MOD);
+	}
+	else
+	{
+		f12_f15_duplicate_carret(c, a, i);
+		//printf("f:15 new carret with pos = %i + %i\n", c->pos, i);
+		//printf("n_cycles = %i\n", a->n_cycles);
+		//sleep(10);
+	}
+// 	c2 = a->carrs;
+// 	while (c2)
+// 	{
+// 		//printf("carret #%i stay in a[%i]. f:%i cast = %d\n", c2->number, c2->pos, a->arena[c2->pos], c2->cast);
+// 		c2 = c2->next;
+// 	}
+// 	sleep(5);
+}
+
+void	f14(t_core *a, t_carriage *c)
+{
+	short	arg[3];
+	int		p;
+	int		i;
+	int		h;
+
+	c->error = function_codage(a, c, arg);
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, a, c) + 2;
+	//printf(">>>>>>>>%i\n", c->jump);
+	p = a->arena[get_pos_arg(a, c, arg, 2) % MEM_SIZE] - 1;
+	if (c->error != 0)
+		return ;
+	i = get_args(a, c, arg, 0);
+	h = get_args(a, c, arg, 1);
+	if (arg[0] == 4)
+		read_byte4(a->arena, 0, c->pos + (i % IDX_MOD), (unsigned char *)&i);
+	//printf("f10: with a[%i] (%i + %i) to r[%i] write ", i + h, i, h, p);
+	i = i + h;
+	write_reg(c->r[p], a->arena, 0, (MEM_SIZE + ((c->pos + i) % MEM_SIZE)) % MEM_SIZE);
+	//printf("'%.2x%.2x%.2x%.2x'\n", c->r[p][0], c->r[p][1], c->r[p][2], c->r[p][3]);
+}
+
+void	f16(t_core *a, t_carriage *c)
 {
 	short	arg[3];
 	int		h;
-	int		i;
 
-	i = function_codage(a, c, arg);
-	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, NULL) + 2;
-	h = a->arena[(c->pos + 2) % MEM_SIZE] - 1;
-	if (i == 1 || h >= REG_NUMBER)
+	c->error = function_codage(a, c, arg);
+	c->jump = byte_cal(arg, a->op_tab[c->f - 1]. lable, a, c) + 2;
+	if (c->error != 0)
 		return ;
-	read_byte4(c->r[h], 0, 0, (unsigned char *)&i);
-	i %= 256;
-	write(1, &i, 1);
+	h = get_args(a, c, arg, 0);
+	h %= 256;
+	write(1, &h, 1);
 }
 
-void	functions2(carriage_t *c, t_core *a, int f, int i)
+void	functions2(t_carriage *c, t_core *a, int f, int i)
 {
-	printf("%i\n", f);
 	if (f == 12)
-		f12_15(a, c, 1);
+		f12_f15(a, c, 1);
 	if (f == 13)
-		f13(a, c);
+		f2_f13(a, c, 1);
 	if (f == 14)
 		f14(a, c);
 	if (f == 15)
-		f12_15(a, c, 0);
+		f12_f15(a, c, 0);
 	if (f == 16)
 		f16(a, c);
 }
 
-void	functions(carriage_t *c, t_core *a, int f, int i)
+void	functions(t_carriage *c, t_core *a, int f, int i)
 {
 	if (f == 1)
 		f1(a, c);
 	if (f == 2)
-		f2(a, c, 0, 0);
+		f2_f13(a, c, 0);
 	if (f == 3)
 		f3(a, c);
 	if (f == 4)
@@ -998,8 +991,9 @@ void	functions(carriage_t *c, t_core *a, int f, int i)
 		functions2(c, a, f, i);
 }
 
-int		carret(carriage_t *c, t_core *a, unsigned char *s, int i)
+int		carret(t_carriage *c, t_core *a, unsigned char *s, int i)
 {
+	////printf("carret #%i stay in a[%i]. f:%i cast = %d\n", c->number, c->pos, a->arena[c->pos], c->cast);
 	if (c->f == 0 && c->cast == 0)
 	{
 		if (s[c->pos] <= 16 && s[c->pos] > 0)
@@ -1008,57 +1002,98 @@ int		carret(carriage_t *c, t_core *a, unsigned char *s, int i)
 			c->cast = a->op_tab[c->f - 1].cycle - 1;
 		}
 		else
-			c->pos = (c->pos + 1) % MEM_SIZE;	//сдвигаемся на 1 
-		// printf("function #%i  >  %i\n", c->f, c->cast + 1);
+		{
+			c->pos = (c->pos + 1) % MEM_SIZE;//сдвигаемся на 1 
+			if (s[c->pos] <= 16 && s[c->pos] > 0)
+			{
+				c->f = s[c->pos];
+				c->cast = a->op_tab[c->f - 1].cycle - 1;
+			}
+		}
+		// //printf("function #%i  >  %i\n", c->f, c->cast + 1);
 		return (0);
 	}
-	if (c->f > 0 && c->cast == 0)
+	if (c->f != 0 && c->cast == 0)
 	{
+		//if (c->f == 15)
+			//printf("c->number = %i\n", c->number);
+		// if (c->number == 1)
+		// {
+		// 	//printf("carret #%i stay in a[%i]. f:%i cast = %d cycle = %d\n", c->number, c->pos, a->arena[c->pos], c->cast, a->n_cycles);
+		// }
 		functions(c, a, c->f, -1);
-		c->pos = (c->pos + c->jump) % MEM_SIZE;
+		c->pos = (MEM_SIZE + (c->pos + c->jump) % MEM_SIZE) % MEM_SIZE;
 		c->f = 0;
 		c->jump = 0;
-		return (1);
+		if (s[c->pos] <= 16 && s[c->pos] > 0)
+		{
+			c->f = s[c->pos];
+			c->cast = a->op_tab[c->f - 1].cycle - 1;
+		}
+		// if (c->error != 0)
+		// {
+		// 	c->error = 0;
+		// 	return (0);
+		// }
+		// else
+		return (1);		
 	}
 	if (c->cast > 0)
 	{
 		c->cast--;
-		// printf("function #%i  >  %i\n", c->f, c->cast + 1);
+		// //printf("function #%i  >  %i\n", c->f, c->cast + 1);
 	}
 	return (0);
 }
 
-void	check_cycles_carret(t_core *a, carriage_t *c, carriage_t *c2)
+void	check_cycles_carret(t_core *a, t_carriage *c, t_carriage *c2)
 {
+	char	buff[1];
+	int		i;
+
+	i = 0;
 	while (c)
 	{
-		if (c->live < a->last_check + a->cycle_to_die)
+		if (c->live < a->last_check)
 		{
+			i++;
+			////printf("carret a[%i] die\n", c->pos);
+			//sleep(5);
 			if (c == a->carrs)
 			{
 				a->carrs = c->next;
 				free(c);
 				c = a->carrs;
+				c2 = a->carrs;
 			}
 			else
 			{
 				c2->next = c->next;
 				free(c);
+				c = c2->next;
 			}
 		}
-		if (c && c != a->carrs)
-		{
-			c2 = c;
+		else if (c2 == c)
 			c = c->next;
+		else
+		{
+			c = c->next;
+			c2 = c2->next;
 		}
 	}
+	// printf("del | %d | carrets\n", i);
+	// read(0, buff, 1);
 }
 
 void	check_cycles(t_core *a)
 {
-	a->n_cycles++;
+	// a->n_cycles++;
+	//printf("n_c = %d | l_c = %d | c_t_d = %d | n_c-l_c = %d\n", a->n_cycles, a->last_check, a->cycle_to_die, a->n_cycles - a->last_check);
 	if (a->n_cycles - a->last_check == a->cycle_to_die)
 	{
+		ft_bzero(a->live_in_p, (sizeof(int) * 4));
+		//printf("cycle_check\nnb_l = %d\n", a->num_lives);
+		//sleep(5);
 		if (a->num_lives >= NBR_LIVE)
 		{
 			a->cycle_to_die -= CYCLE_DELTA;
@@ -1078,91 +1113,125 @@ void	check_cycles(t_core *a)
 
 //omaslova изменила функцию ниже для визуализации
 
-WINDOW		*print_arena(t_core *a)
+void	print_arena(t_core *a)
 {
-	WINDOW			*win;
-	int				i;
-	unsigned char	*s;
+	int		i;
+	int		row;
+	int		that_color;
 
-	i = 0;
-	s = a->arena;
-	system("clear");
-	start_color();
-	win = newwin(200, 150, 0, 0); //need to be changed
-	wprintw(win, "..%i..\n", a->n_cycles);
-	init_pair(FRAME, COLOR_YELLOW, COLOR_YELLOW);
-	while (i < MEM_SIZE)
+	i = -1;
+	row = START_ROW - 1;
+	while (++i < MEM_SIZE)
 	{
-		make_frame(win);
-		if (a->carrs->pos == i)
-			wprintw(win, PFC_RED "%.2X" PFC_RESET, s[i++]);
-		else if (a->carrs->next->pos == i)
-			wprintw(win, PFC_GREEN "%.2X" PFC_RESET, s[i++]);
-		else
-			wprintw(win, "%.2x", s[i++]);
-		if (i % 4 == 0 && i % 64 != 0)
-			wprintw(win, " ");
-		if (i % 64 == 0)
-			wprintw(win, "\n");
-		wrefresh(win);
+		if ((i % MAINW_ROWS) == 0)
+			wmove(VIS->main_win, ++row, 4);
+		make_frame(VIS->main_win, COLOR_PAIR(FRAME));
+		make_frame(VIS->info_win, COLOR_PAIR(FRAME));
+		that_color = VIS->paint_arena[i].is_st ? COLOR_PAIR(VIS->paint_arena[i].color)
+		| A_BOLD | A_UNDERLINE : COLOR_PAIR(VIS->paint_arena[i].color);
+		wattron(VIS->main_win, that_color);
+		// dprintf(g_fd, "VIS->paint_arena[i] = %d\n", VIS->paint_arena[i].color);
+		// dprintf(g_fd, "%.2x  ", a->arena[i]);
+		wprintw(VIS->main_win, "%.2x", a->arena[i]);
+		wattroff(VIS->main_win, that_color);
+		waddch(VIS->main_win, ' ');
+		if (VIS->paint_arena[i].is_st > 0)
+			VIS->paint_arena[i].is_st--;
+		if (VIS->paint_arena[i].i_live > 0)
+		{
+			if (a->n_cycles == 1547)
+				dprintf(g_fd, "\n\n-----REMAIN TO LIVE %d\n", VIS->paint_arena[i].i_live);
+			VIS->paint_arena[i].i_live--;
+		}
 	}
-	wprintw(win, "\n\n\n\n");
-	wrefresh(win);
-	return (win);
+	wrefresh(VIS->main_win);
+	wrefresh(VIS->info_win);
+	// wprintw(a->visual_flag->main_win, "\n\n\n\n");
 }
 
-void	fight(t_core *a, carriage_t *c)
+void	print_cycle(t_core *a, t_carriage *c)
 {
-	// char	buff[5];
-	WINDOW	*win;
+	static int	v_time;
+	int		o;
+
+	// ft_bzero(VIS->paint_arena, (sizeof(unsigned char) * MEM_SIZE));
+	if (v_time == 0)
+		VIS->start = clock();
+	a->carrs_num = 0;
+	c = a->carrs;
+	while(c)
+	{
+		o = carret(c, a, a->arena, 0);
+		if (o == 1)
+			carret(c, a, a->arena, 0);
+		c = c->next;
+		a->carrs_num++;
+	}
+	check_cycles(a);
+	a->n_cycles++;
+	put_colors(a);
+	print_arena(a);
+	if (v_time == 0)
+		VIS->end = clock();
+	v_time++;
+	dprintf(g_fd, "\ntime_1 = %lu\n", (a->visual->end - a->visual->start));
+	dprintf(g_fd, "time_2 = %f\n\n", (double)((a->visual->end - a->visual->start) / CLOCKS_PER_SEC));
+}
+
+void	check_cyc_per_sec(t_core *a, char ch)
+{
+	if (ch == MINUS_TEN)
+		VIS->c_per_s -= 10;
+	if (ch == PLUS_TEN)
+		VIS->c_per_s += 10;
+	if (ch == MINUS_ONE)
+		VIS->c_per_s -= 1;
+	if (ch == PLUS_ONE)
+		VIS->c_per_s += 1;
+}
+
+void	fight(t_core *a, t_carriage *c)
+{
 	int		ch; //added
 	int		k;
 	int		o;
 
-	k = 0;
-	initscr();
-	noecho();
-	cbreak();
-	keypad(win, TRUE);
+	k = 1;
+	system("clear");
+	initialize(a);
+	print_cycle(a, c);
 	while (a->cycle_to_die > 0 && a->carrs && (a->dump == -1 || a->dump > a->n_cycles))
 	{
-		win = print_arena(a);
-		c = a->carrs;
-		while(c)
+		ch = getch();
+		check_cyc_per_sec(a, ch);
+		if (ch == RUN)
 		{
-			o = carret(c, a, a->arena, 0);
-			if (o == 1)
-				carret(c, a, a->arena, 0);
-			c = c->next;
+			k++;
+			VIS->if_run = k % 2 == 0 ? 1 : 0;
 		}
-		if (a->n_cycles == k)
-			k = 0;
-		if (k == 0)
+		else if (ch == ONE_CYCLE_PASS)
 		{
-			ch = wgetch(win); // read(0, buff, 5);
-			k = ch;
-			// if (buff[0] == '+')
-			// 	k = a->n_cycles + atoi(buff + 1);
-			// buff[0] = 0;
-			// buff[1] = 0;
-			// buff[2] = 0;
-			// buff[3] = 0;
-			// buff[4] = 0;
+			print_cycle(a, c);
+			k = 1;
 		}
-		check_cycles(a);
+		if (VIS->if_run && k % 2 == 0)
+		{
+			print_cycle(a, c);
+		}
+		print_info_frame(a);
 	}
-	wprintw(win, "WINNER - PLAYER №%i\n", a->last_say_live);
-	endwin();
+	// wprintw(win, "WINNER - PLAYER №%i\n", a->last_say_live);
 }
 
-t_core	*make_core(carriage_t *c, unsigned char *s, player_t *p, int d)
+t_core	*make_core(t_carriage *c, unsigned char *s, t_player *p, int *d)
 {
 	t_core	*a;
 
 	if (!(a = malloc(sizeof(t_core))))
 		free_c(p, c, "malloc error");
 	a->arena = s;
-	a->dump = d;
+	a->visual_flag = d[1];
+	a->dump = d[0];
 	a->n_cycles = 0;
 	a->num_lives = 0;
 	a->max_checks = 0;
@@ -1175,9 +1244,9 @@ t_core	*make_core(carriage_t *c, unsigned char *s, player_t *p, int d)
 	return (a);
 }
 
-void	do_this(player_t *p, int t, int d)
+void	do_this(t_player *p, int t, int *d)
 {
-	carriage_t		*c;
+	t_carriage		*c;
 	t_core			*arena;
 	unsigned char	a[MEM_SIZE];
 
@@ -1189,7 +1258,7 @@ void	do_this(player_t *p, int t, int d)
 	fight(arena, NULL);
 }
 
-void	check_p(int i, char **m, player_t *p, int d)
+void	check_p(int i, char **m, t_player *p, int *d)
 {
 	int	o;
 	int	h;
@@ -1207,8 +1276,10 @@ void	check_p(int i, char **m, player_t *p, int d)
 			h = flag_n(m, ++o, &t, p);
 			o++;
 		}
+		if (h == 8)
+			d[1] = 1;
 		if (h == 4 && o + 1 < i)
-			d = flag_d(m, ++o, &t);
+			d[0] = flag_d(m, ++o, &t);
 		if (h == 5 || (h == 4 && o >= i))
 			ft_error(p, 4, "flag -d not valide");
 		if (h == 3 || (h == 2 && o + 2 >= i))
@@ -1216,31 +1287,25 @@ void	check_p(int i, char **m, player_t *p, int d)
 		if (h == -1)
 			ft_error(p, t, m[o]);
 	}
+	if (!p->next)
+		ft_error(p, 4, "Hay, where are the fighters?");
 	p = player_numb(p, &t, 1);
 	do_this(p, t, d);
 }
 
 int		main(int ac, char **av)
 {
+	int	d[2];
 
-	// int i;
-	// int y;
-	// char *num;
+	d[0] = -1;
+	d[1] = -1;
 
-	// i = 8193;
-	// printf("%.8x\n", i);
-	// num = (char *)&i;
-	// printf("%.2x%.2x%.2x%.2x\n", num[3], num[2], num[1], num[0]);
-	// y = *((int *)num);
-	// printf("%.8x\n", y);
-	// exit(0);
+	g_fd = open("log", O_RDWR | O_TRUNC | O_CREAT);
 	if (ac < 2)
 		printf("Error: no arguments\n");
 	else if (ac > MAX_ARGS_NUMBER + 1)
 		printf("Error: tomach arguments\n");
 	else
-		check_p(ac, av, NULL, -1);
-
-
+		check_p(ac, av, NULL, d);
 	return 0;
 }

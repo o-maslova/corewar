@@ -2,10 +2,12 @@
 #define VISUALIZATION_H
 
 #include <ncurses.h>
+#include <time.h>
 #include "typedef.h"
 #include "op.h"
 
 #define CLEAR_LINE		20
+#define CYCLE_PER_SEC	((a->visual->end - a->visual->start) / CLOCKS_PER_SEC)
 
 #define BCHAR			'*'
 #define HEIGTH			(MEM_SIZE / 64 + 4)
@@ -15,11 +17,32 @@
 
 #define RUN				' '
 #define ONE_CYCLE_PASS	's'
+#define MINUS_TEN		'q'
+#define MINUS_ONE		'w'
+#define PLUS_TEN		'r'
+#define PLUS_ONE		'e'
 
-#define FRAME			1
-#define COLOR_GREY		10
-#define COLOR_VASIL		11
-#define COLOR_ORANGE	12
+#define FRAME			100
+#define COLOR_GREY		80
+#define COLOR_LGREY		145
+#define COLOR_PURPLE	90
+#define COLOR_LPURPLE	140
+#define COLOR_LRED		160
+#define COLOR_OHRA		178
+#define COLOR_ROSE		132
+#define COLOR_FUCSIA	126
+#define COLOR_BURGUNDI	89
+#define COLOR_BIRUSA	30
+#define COLOR_LEMON		184
+#define COLOR_NBLUE		81
+#define COLOR_LBLUE		159
+#define COLOR_LIME		154
+#define COLOR_LBROWN	130
+#define COLOR_VASIL		111
+#define COLOR_PINK		200
+#define YEL				1
+
+
 
 #define START_ROW		2
 
@@ -30,15 +53,25 @@ struct					s_color
 	short				c_clr;
 	short				st_clr;
 	short				live_clr;
-	// short				c_pair;
-	// short				st_pair;
-	// short				live_pair;
 };
+
+struct					s_paint
+{
+	short				not_in_field;
+	short				is_st;
+	short				i_live;
+	short				color;
+	short				default_clr;
+};
+
 
 struct					s_win
 {
 	bool				if_run;
-	unsigned char		paint_arena[MEM_SIZE];
+	clock_t				start;
+	clock_t				end;
+	int					c_per_s; // cycle per second
+	t_paint				paint_arena[MEM_SIZE];
 	t_color				clr[MAX_PLAYERS + 1];
 	WINDOW				*main_win;
 	WINDOW				*info_win;
