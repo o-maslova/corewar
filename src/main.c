@@ -752,8 +752,8 @@ void	print_arena(t_core *a)
 			VIS->paint_arena[i].is_st--;
 		if (VIS->paint_arena[i].i_live > 0)
 		{
-			if (a->n_cycles == 1547)
-				dprintf(g_fd, "\n\n-----REMAIN TO LIVE %d\n", VIS->paint_arena[i].i_live);
+			// if (a->n_cycles == 1547)
+			// 	dprintf(g_fd, "\n\n-----REMAIN TO LIVE %d\n", VIS->paint_arena[i].i_live);
 			VIS->paint_arena[i].i_live--;
 		}
 	}
@@ -776,7 +776,12 @@ void	print_cycle(t_core *a, t_carriage *c)
 	{
 		o = carret(c, a, a->arena, 0);
 		// if (o == 1)
+
 		// 	carret(c, a, a->arena, 0);
+		if (a->n_cycles == 7174 && (c->pos > 135 && c->pos < 140))
+			dprintf(g_fd, "c_n = %d | pos = %d \n", c->number, c->pos);
+		if (c->number == 30)
+			dprintf(g_fd, "c_n = %d | pos = %d | func = %d | cast = %d | cycle = %d |\n", c->number, c->pos, c->f, c->cast, a->n_cycles);
 		c = c->next;
 		a->carrs_num++;
 	}
