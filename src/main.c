@@ -1144,8 +1144,9 @@ void	print_arena(t_core *a)
 			VIS->paint_arena[i].i_live--;
 		}
 	}
+	print_info_frame(a);
+	// wrefresh(VIS->info_win);
 	wrefresh(VIS->main_win);
-	wrefresh(VIS->info_win);
 	// wprintw(a->visual_flag->main_win, "\n\n\n\n");
 }
 
@@ -1154,7 +1155,6 @@ void	print_cycle(t_core *a, t_carriage *c)
 	static int	v_time;
 	int		o;
 
-	// ft_bzero(VIS->paint_arena, (sizeof(unsigned char) * MEM_SIZE));
 	if (v_time == 0)
 		VIS->start = clock();
 	a->carrs_num = 0;
@@ -1162,20 +1162,20 @@ void	print_cycle(t_core *a, t_carriage *c)
 	while(c)
 	{
 		o = carret(c, a, a->arena, 0);
-		if (o == 1)
-			carret(c, a, a->arena, 0);
+		// if (o == 1)
+		// 	carret(c, a, a->arena, 0);
 		c = c->next;
 		a->carrs_num++;
 	}
 	check_cycles(a);
-	a->n_cycles++;
 	put_colors(a);
 	print_arena(a);
+	a->n_cycles++;
 	if (v_time == 0)
 		VIS->end = clock();
 	v_time++;
-	dprintf(g_fd, "\ntime_1 = %lu\n", (a->visual->end - a->visual->start));
-	dprintf(g_fd, "time_2 = %f\n\n", (double)((a->visual->end - a->visual->start) / CLOCKS_PER_SEC));
+	// dprintf(g_fd, "\ntime_1 = %lu\n", (a->visual->end - a->visual->start));
+	// dprintf(g_fd, "time_2 = %f\n\n", (double)((a->visual->end - a->visual->start) / CLOCKS_PER_SEC));
 }
 
 void	check_cyc_per_sec(t_core *a, char ch)
@@ -1218,7 +1218,8 @@ void	fight(t_core *a, t_carriage *c)
 		{
 			print_cycle(a, c);
 		}
-		print_info_frame(a);
+		// refresh();
+		// print_info_frame(a);
 	}
 	// wprintw(win, "WINNER - PLAYER №%i\n", a->last_say_live);
 }
@@ -1288,7 +1289,7 @@ void	check_p(int i, char **m, t_player *p, int *d)
 			ft_error(p, t, m[o]);
 	}
 	if (!p->next)
-		ft_error(p, 4, "Hay, where are the fighters?");
+		ft_error(p, 4, "Hey, where are the fighters?");
 	p = player_numb(p, &t, 1);
 	do_this(p, t, d);
 }
