@@ -91,29 +91,29 @@ struct					s_player
 
 void					make_core2(t_core *a);
 void					print_arena(t_core *a);
-int get_args(t_core *a, t_carriage *c, short arg[3], short num);
-void	read_byte2(unsigned char *a, int pos, int pos2, unsigned char *num);
-void	read_byte4(unsigned char *a, int pos, int pos2, unsigned char *num);
-void	write_reg(unsigned char *r, unsigned char *c, int p, int t);
-int function_codage(t_core *arena, t_carriage *car, short *arg);
-int		byte_cal(short *a, int i, t_core *s, t_carriage *c);
-short get_pos_arg(t_core *a, t_carriage *c, short arg[3], short num); /// считает позицию на арене аргумента num
-void	free_all(t_core *a, char *s);
+int						get_args(t_core *a, t_carriage *c, short arg[3], short num);
+void					read_byte2(unsigned char *a, int pos, int pos2, unsigned char *num);
+void					read_byte4(unsigned char *a, int pos, int pos2, unsigned char *num);
+void					write_reg(unsigned char *r, unsigned char *c, int p, int t);
+int						function_codage(t_core *arena, t_carriage *car, short *arg);
+int						byte_cal(short *a, int i, t_core *s, t_carriage *c);
+short					get_pos_arg(t_core *a, t_carriage *c, short arg[3], short num); /// считает позицию на арене аргумента num
+void					free_all(t_core *a, char *s);
 
-void	f1(t_core *a, t_carriage *c);
-void	f2_f13(t_core *a, t_carriage *c, int f);
-void	f3(t_core *a, t_carriage *c);
-void	f4(t_core *a, t_carriage *c);
-void	f5(t_core *a, t_carriage *c);
-void	f6(t_core *a, t_carriage *c);
-void	f7(t_core *a, t_carriage *c);
-void	f8(t_core *a, t_carriage *c);
-void	f9(t_core *a, t_carriage *c);
-void	f10(t_core *a, t_carriage *c);
-void	f11(t_core *a, t_carriage *c);
-void	f12_f15_duplicate_carret(t_carriage *c, t_core *a, int pos);
-void	f12_f15(t_core *a, t_carriage *c, int p);
-void	f14(t_core *a, t_carriage *c);
-void	f16(t_core *a, t_carriage *c);
+void					f1(t_core *a, t_carriage *c);
+void					f2_f13(t_core *a, t_carriage *c, int f);
+void					f3(t_core *a, t_carriage *c);
+void					f4(t_core *a, t_carriage *c);
+void					f5(t_core *a, t_carriage *c);
+void					f6(t_core *a, t_carriage *c);
+void					f7(t_core *a, t_carriage *c);
+void					f8(t_core *a, t_carriage *c);
+void					f9(t_core *a, t_carriage *c);
+void					f10(t_core *a, t_carriage *c);
+void					f11(t_core *a, t_carriage *c);
+void					f12_f15_duplicate_carret(t_carriage *c, t_core *a, int pos);
+void					f12_f15(t_core *a, t_carriage *c, int p);
+void					f14(t_core *a, t_carriage *c);
+void					f16(t_core *a, t_carriage *c);
 
 #endif

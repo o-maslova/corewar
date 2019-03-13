@@ -14,7 +14,6 @@ static void				print_info2(t_core *a, int row)
 	while (tmp)
 	{
 		mvwprintw(VIS->info_win, (row += 2), 4, "Player -%d : ", tmp->number);
-		// dprintf(g_fd, "player color = %d\n", VIS->clr[tmp->number - 1].st_clr);
 		wattron(VIS->info_win, COLOR_PAIR(VIS->clr[tmp->number - 1].st_clr));
 		wprintw(VIS->info_win, "%.*s", tmp->prog_name);
 		wattroff(VIS->info_win, COLOR_PAIR(VIS->clr[tmp->number - 1].st_clr));

@@ -17,10 +17,15 @@
 
 #define RUN				' '
 #define ONE_CYCLE_PASS	's'
-#define MINUS_TEN		'q'
-#define MINUS_ONE		'w'
-#define PLUS_TEN		'r'
-#define PLUS_ONE		'e'
+#define MINUS_BIG		'q'
+#define MINUS_SMALL		'w'
+#define PLUS_BIG		'r'
+#define PLUS_SMALL		'e'
+
+#define DUMP			'x' //need to delete
+
+#define SMALL_STEP		1
+#define BIG_STEP		10
 
 #define FRAME			100
 #define COLOR_GREY		80
