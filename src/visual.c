@@ -97,17 +97,23 @@ void	put_player_colors(t_core *a)
 	j = 0;
 	i = 0;
 	tmp = a->players;
+	dprintf(g_fd, "CHECK HERE291\n");
 	while (i < MEM_SIZE)
 	{
+		dprintf(g_fd, "CHECK HERE292\n");
 		while (i < tmp->length + j)
 			VIS->paint_arena[i++].default_clr = VIS->clr[tmp->number - 1].st_clr;
 		if (tmp->number <= a->num_pl)
 		{
+			dprintf(g_fd, "CHECK HERE293 = %d\n", tmp->number);
 			j += PLAYER_FIELD;
 			tmp = tmp->next;
 		}
 		while (i < j)
 			VIS->paint_arena[i++].default_clr = VIS->clr[COLOR_NUM - 1].st_clr;
+		if (a->num_pl == 3 && tmp == NULL)
+			VIS->paint_arena[i++].default_clr = VIS->clr[COLOR_NUM - 1].st_clr;
+		dprintf(g_fd, "CHECK HERE293 i = %d\n", i);
 	}
 }
 
@@ -212,6 +218,7 @@ void	create_col_pairs(t_core *a)
 
 void	initialize(t_core *a)
 {
+	dprintf(g_fd, "CHECK HERE22\n");
 	VIS = (t_win *)ft_memalloc(sizeof(t_win));
 	VIS->if_run = false;
 	initscr();
@@ -228,9 +235,14 @@ void	initialize(t_core *a)
 	make_frame(VIS->main_win, COLOR_PAIR(FRAME));
 	VIS->info_win = newwin(HEIGTH, INFO_WDTH, 0, MAIN_WDTH - 1);
 	make_frame(VIS->info_win, COLOR_PAIR(FRAME));
+	dprintf(g_fd, "CHECK HERE28\n");
 	create_col_pairs(a);
+	dprintf(g_fd, "CHECK HERE29\n");
 	put_player_colors(a);
+	dprintf(g_fd, "CHECK HERE210\n");
 	put_colors(a);
+	dprintf(g_fd, "CHECK HERE211\n");
 	print_arena(a);
+	dprintf(g_fd, "CHECK HERE212\n");
 	refresh();
 }

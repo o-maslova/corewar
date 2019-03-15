@@ -187,10 +187,20 @@ int		make_p3(int *t, t_player *pl, unsigned char *buff, uint32_t p)
 	return (1);
 }
 
+void		rotate_num(char *str, char *buff)
+{
+	str[0] = buff[3];
+	str[1] = buff[2];
+	str[2] = buff[1];
+	str[3] = buff[0];
+}
+
+
 int		make_p(char *s, int *t, int o, t_player *pl)
 {
 	size_t			i;
 	uint32_t		*p;
+	int				size;
 	unsigned char	buff[(PROG_NAME_LENGTH + COMMENT_LENGTH)];
 
 	if ((*t = open(s, O_RDONLY)) < 0)
@@ -204,12 +214,13 @@ int		make_p(char *s, int *t, int o, t_player *pl)
 		return (check_ret(t, 1));
 	pl = make_p2(pl, o, (char *) buff);
 	i = read(*t, buff, 4);
-	p = (unsigned int *)buff;
-	p[0] = revers(p[0]);
-	if (i < 4 || p[0] > CHAMP_MAX_SIZE)
+	//p = (unsigned int *)buff;
+	rotate_num((char *)&size, (char *)&(buff[0]));
+	//p[0] = revers(p[0]);
+	if (i < 4 || size > CHAMP_MAX_SIZE)
 		return (check_ret(t, 2));
-	pl->length = p[0];
-	return (make_p3(t, pl, buff, p[0]));
+	pl->length = size;
+	return (make_p3(t, pl, buff, size));
 }
 
 int		check_p2(char *s, int *t, int o, t_player *pl)
@@ -434,8 +445,14 @@ int		byte_cal(short *a, int i, t_core *s, t_carriage *c)
 		if (a[p] == 1)
 		{
 			t += 1;
-			if (s->arena[(c->pos + t + 1) % MEM_SIZE] - 1 > 15)
+			if (s->n_cycles == 4703 && (c->number == 16 || c->number == 17))
+				dprintf(g_fd, ">>c_%d : reg = %d, erroe = %d\n", c->number, s->arena[(c->pos + t + 1) % MEM_SIZE], c->error);
+			if (s->arena[(c->pos + t + 1) % MEM_SIZE] > 16 || s->arena[(c->pos + t + 1) % MEM_SIZE] < 1)
+			{
 				c->error++;
+				if (s->n_cycles == 4703 && (c->number == 16 || c->number == 17))
+					dprintf(g_fd, ">c_%d : reg = %d, erroe = %d\n", c->number, s->arena[(c->pos + t + 1) % MEM_SIZE], c->error);
+			}
 		}
 		if (a[p] == 2)
 			t += i;
@@ -608,7 +625,6 @@ void	functions(t_carriage *c, t_core *a, int f, int i)
 
 int		carret(t_carriage *c, t_core *a, unsigned char *s, int i)
 {
-	////printf("carret #%i stay in a[%i]. f:%i cast = %d\n", c->number, c->pos, a->arena[c->pos], c->cast);
 	if (c->f == 0 && c->cast == 0)
 	{
 		if (s[c->pos] <= 16 && s[c->pos] > 0)
@@ -625,39 +641,25 @@ int		carret(t_carriage *c, t_core *a, unsigned char *s, int i)
 				c->cast = a->op_tab[c->f - 1].cycle - 1;
 			}
 		}
-		// //printf("function #%i  >  %i\n", c->f, c->cast + 1);
 		return (0);
 	}
 	if (c->f != 0 && c->cast == 0)
 	{
-		//if (c->f == 15)
-			//printf("c->number = %i\n", c->number);
-		// if (c->number == 1)
-		// {
-		// 	//printf("carret #%i stay in a[%i]. f:%i cast = %d cycle = %d\n", c->number, c->pos, a->arena[c->pos], c->cast, a->n_cycles);
-		// }
 		functions(c, a, c->f, -1);
+
 		c->pos = (MEM_SIZE + (c->pos + c->jump) % MEM_SIZE) % MEM_SIZE;
 		c->f = 0;
 		c->jump = 0;
+		c->error = 0;
 		if (s[c->pos] <= 16 && s[c->pos] > 0)
 		{
 			c->f = s[c->pos];
 			c->cast = a->op_tab[c->f - 1].cycle - 1;
 		}
-		// if (c->error != 0)
-		// {
-		// 	c->error = 0;
-		// 	return (0);
-		// }
-		// else
 		return (1);		
 	}
 	if (c->cast > 0)
-	{
 		c->cast--;
-		// //printf("function #%i  >  %i\n", c->f, c->cast + 1);
-	}
 	return (0);
 }
 
@@ -772,6 +774,8 @@ void	print_cycle(t_core *a, t_carriage *c)
 		o = carret(c, a, a->arena, 0);
 		// if (o == 1)
 		// 	carret(c, a, a->arena, 0);
+		if (a->n_cycles > 6500 && c->number == 7)
+			dprintf(g_fd, "cycle = %d |^^c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
 		c = c->next;
 		a->carrs_num++;
 	}
@@ -789,6 +793,56 @@ void	print_cycle(t_core *a, t_carriage *c)
 	v_time++;
 	// dprintf(g_fd, "\ntime_1 = %lu\n", (a->visual->end - a->visual->start));
 	// dprintf(g_fd, "time_2 = %f\n\n", (double)((a->visual->end - a->visual->start) / CLOCKS_PER_SEC));
+}
+
+//abulakh for fast dump
+
+void	print_arena_dump(t_core *a)
+{
+	int		i;
+	int		row;
+
+	row = 0;
+	while (row * 64 < MEM_SIZE)
+	{
+		i = -1;
+		ft_printf("%#06x :", row * 64);
+		while (++i < 64)
+		{
+			ft_printf(" %02x", a->arena[i + (row * 64)]);
+		}
+		ft_printf(" \n");
+		row++;
+	}
+}
+
+
+void	print_cycle_dump(t_core *a, t_carriage *c, int type)
+{
+	int		o;
+
+	a->carrs_num = 0;
+	c = a->carrs;
+	while(c)
+	{
+		if (a->n_cycles == 7184 && c->cast == 0)
+			dprintf(g_fd, "!!!cycle = %d | c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
+		o = carret(c, a, a->arena, 0);
+		if (a->n_cycles == 7207 && c->pos >= 2795 && c->pos <= 2805 && c->f == 3)
+			dprintf(g_fd, "cycle = %d |^^c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
+		if (a->n_cycles > 6500 && c->number == 7)
+			dprintf(g_fd, "cycle = %d |^^c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
+		if (a->n_cycles == 7183 && c->pos == 2781)
+			dprintf(g_fd, "!!!cycle = %d | c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
+		if (a->n_cycles > 7183 && c->number == 37)
+			dprintf(g_fd, "!!37!cycle = %d | c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
+		c = c->next;
+		a->carrs_num++;
+	}
+	check_cycles(a);
+	if (type == 1)
+		print_arena_dump(a);
+	a->n_cycles++;
 }
 
 void	check_cyc_per_sec(t_core *a, char ch)
@@ -817,6 +871,7 @@ void	fight(t_core *a, t_carriage *c)
 	system("clear");
 	initialize(a);
 	print_cycle(a, c);
+	a->visual_flag = 1;
 	VIS->if_run = 0;
 	while (a->cycle_to_die > 0 && a->carrs)
 	{
@@ -838,6 +893,40 @@ void	fight(t_core *a, t_carriage *c)
 	}
 	dprintf(g_fd, "WINNER - PLAYER №%i\n", a->last_say_live);
 }
+
+void	introduction_dump(t_core *a)
+{
+	t_player *player;
+
+	ft_printf("Introducing contestants...\n");
+	player = a->players;
+	while (player)
+	{
+		ft_printf("* Player %d, weighing %d bytes, \"%s\" (\"%s\") !\n", player->number, player->length, player->prog_name, player->comment);
+		player = player->next;
+	}
+}
+
+void	fight_dump(t_core *a, t_carriage *c)
+{
+	int		ch;
+	int		k;
+	int		o;
+
+	k = 1;
+	introduction_dump(a);
+	a->visual_flag = 0;
+	print_cycle_dump(a, c, 0);
+	while (a->cycle_to_die > 0 && a->carrs && a->n_cycles < a->dump)
+	{
+		//dprintf(g_fd, "n_cycles = %d\n", a->n_cycles);
+		print_cycle_dump(a, c, 0);
+	}
+	print_cycle_dump(a, c, 1);
+	//dprintf(g_fd, "WINNER - PLAYER №%i\n", a->last_say_live);
+}
+
+
 
 t_core	*make_core(t_carriage *c, unsigned char *s, t_player *p, int *d)
 {
@@ -871,7 +960,12 @@ void	do_this(t_player *p, int t, int *d)
 	arena = make_core(c, a, p, d);
 	arena->num_pl = t;
 	arena->last_say_live = t;
-	fight(arena, NULL);
+	if (arena->dump != -1)
+	{
+		fight_dump(arena, NULL);
+	}
+	else
+		fight(arena, NULL);
 }
 
 void	check_p(int i, char **m, t_player *p, int *d)

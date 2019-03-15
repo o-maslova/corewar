@@ -1,0 +1,1 @@
+./corewar -d 7192 ./vm_champs/champs/championships/2014/brandazz/Rainbow_dash.cor ./vm_champs/champs/championships/2014/gudepard/Kappa.cor ./vm_champs/champs/championships/2014/hmoutaou/Misaka_Mikoto.cor ./vm_champs/champs/championships/2014/hmichals/Wall.cor

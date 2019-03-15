@@ -15,6 +15,7 @@
 
 #include "op.h"
 #include "libft.h"
+#include "ft_printf/ft_printf.h"
 #include "typedef.h"
 #include "visualization.h"
 
@@ -84,7 +85,7 @@ struct					s_player
 	int					number;
 	char				prog_name[PROG_NAME_LENGTH + 1];
 	char				comment[COMMENT_LENGTH + 1];
-	unsigned char		code[CHAMP_MAX_SIZE];
+	unsigned char		code[CHAMP_MAX_SIZE + 1];
 	unsigned int		length;			//длина исполняемого кода//
 	t_player			*next;
 };

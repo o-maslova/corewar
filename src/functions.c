@@ -11,7 +11,8 @@ void	f1(t_core *a, t_carriage *c)
 	i *= -1;
 	if (i <= a->num_pl && i > 0)
 	{
-		a->visual->paint_arena[c->pos].i_live = 50;
+		if (a->visual_flag == 1)
+			a->visual->paint_arena[c->pos].i_live = 50;
 		a->live_in_p[i - 1] += 1;
 		// printf("f1: player #%i\n", i);
 		a->last_say_live = i;
@@ -31,6 +32,7 @@ void	f2_f13(t_core *a, t_carriage *c, int f)
 
 	c->error = function_codage(a, c, arg);
 	c->jump = byte_cal(arg, a->op_tab[c->f - 1].lable, a, c) + 2;
+
 	h = a->arena[get_pos_arg(a, c, arg, 1) % MEM_SIZE] - 1;
 	if (c->error != 0)
 		return ;
@@ -73,8 +75,10 @@ void	f3(t_core *a, t_carriage *c)
 	}
 	h = get_args(a, c, arg, 1);
 	h %= IDX_MOD;
+	if (a->n_cycles == 7218)
+		dprintf(g_fd, ">>c_%d | pos = %d | c_f = %d|wr to %d |reg - |%x|%x|%x|%x|\n", c->number, c->pos, c->f, (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE, c->r[i][0], c->r[i][1], c->r[i][2], c->r[i][3]);
 	write_reg(a->arena, c->r[i], (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE, 0);
-	while (++tmp < 4)
+	while (a->visual_flag == 1 && ++tmp < 4)
 	{
 		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].is_st = 50;
 		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].default_clr =
@@ -272,8 +276,10 @@ void	f11(t_core *a, t_carriage *c)
 	if (arg[1] == 4)
 		read_byte4(a->arena, 0, c->pos + (h % IDX_MOD), (unsigned char *)&h);
 	h = (h + p) % IDX_MOD;
-	write_reg(a->arena, c->r[i], (MEM_SIZE + c->pos + h) % MEM_SIZE, 0);
-	while (++tmp < 4)
+	if (a->n_cycles == 7218)
+		dprintf(g_fd, ">>c_%d | pos = %d | c_f = %d| write to %d |\n", c->number, c->pos, c->f, (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE);
+	write_reg(a->arena, c->r[i], (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE, 0);
+	while (a->visual_flag == 1 && ++tmp < 4)
 	{
 		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].is_st = 50;
 		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].default_clr = 
@@ -333,22 +339,11 @@ void	f12_f15(t_core *a, t_carriage *c, int p)
 	if (p == 1)
 	{
 		f12_f15_duplicate_carret(c, a, i % IDX_MOD);
-		//printf("f:12 new carret with pos = %i\n", i % IDX_MOD);
 	}
 	else
 	{
 		f12_f15_duplicate_carret(c, a, i);
-		//printf("f:15 new carret with pos = %i + %i\n", c->pos, i);
-		//printf("n_cycles = %i\n", a->n_cycles);
-		//sleep(10);
 	}
-// 	c2 = a->carrs;
-// 	while (c2)
-// 	{
-// 		//printf("carret #%i stay in a[%i]. f:%i cast = %d\n", c2->number, c2->pos, a->arena[c2->pos], c2->cast);
-// 		c2 = c2->next;
-// 	}
-// 	sleep(5);
 }
 
 void	f14(t_core *a, t_carriage *c)
@@ -385,5 +380,5 @@ void	f16(t_core *a, t_carriage *c)
 		return ;
 	h = get_args(a, c, arg, 0);
 	h %= 256;
-	write(1, &h, 1);
+	//write(1, &h, 1);
 }
