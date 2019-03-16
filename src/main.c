@@ -36,12 +36,8 @@ int	ft_type_codeage(t_core *arena, t_carriage *car, short *arg)
 	error = 0;
 	while(i < arena->op_tab[car->f - 1].nb_args)
 	{
-		if (arg[i] == 0 || (arg[i] & arena->op_tab[car->f - 1].args[i]) != arg[i])
+		if (arg[i] == 0 || ((arg[i] & arena->op_tab[car->f - 1].args[i])) != arg[i])
 			error = 1;
-		// if (arg[i] == 2)
-		// 	arg[i] = arena->op_tab[car->f - 1].lable;
-		// else if (arg[i] == 4)
-		// 	arg[i] = 2;
 		i++;
 	}
 	return (error);
@@ -126,7 +122,6 @@ void	free_c(t_player *p, t_carriage *c, char *s)
 	while (c)
 	{
 		h = c->next;
-		//printf("%s\n", p->prog_name);
 		free(c);
 		c = h;
 	}
@@ -214,9 +209,7 @@ int		make_p(char *s, int *t, int o, t_player *pl)
 		return (check_ret(t, 1));
 	pl = make_p2(pl, o, (char *) buff);
 	i = read(*t, buff, 4);
-	//p = (unsigned int *)buff;
 	rotate_num((char *)&size, (char *)&(buff[0]));
-	//p[0] = revers(p[0]);
 	if (i < 4 || size > CHAMP_MAX_SIZE)
 		return (check_ret(t, 2));
 	pl->length = size;
@@ -399,7 +392,7 @@ t_carriage *make_carret2(t_player *p, int i, int l)
 	c->pos = l;
 	c->jump = 0;
 	c->carry = 0;
-	c->cast = 0;
+	c->cast = 1;
 	c->live = 0;
 	c->number = i;
 	c->f = 0;
@@ -430,7 +423,6 @@ void	bit_print(int i)
 	if (i < 1)
 		return ;
 	bit_print(i / 2);
-	//printf("%i", i % 2);
 }
 
 int		byte_cal(short *a, int i, t_core *s, t_carriage *c)
@@ -445,13 +437,10 @@ int		byte_cal(short *a, int i, t_core *s, t_carriage *c)
 		if (a[p] == 1)
 		{
 			t += 1;
-			if (s->n_cycles == 4703 && (c->number == 16 || c->number == 17))
-				dprintf(g_fd, ">>c_%d : reg = %d, erroe = %d\n", c->number, s->arena[(c->pos + t + 1) % MEM_SIZE], c->error);
 			if (s->arena[(c->pos + t + 1) % MEM_SIZE] > 16 || s->arena[(c->pos + t + 1) % MEM_SIZE] < 1)
 			{
+				dprintf(g_fd, "ERROR CHECK THIS\n");
 				c->error++;
-				if (s->n_cycles == 4703 && (c->number == 16 || c->number == 17))
-					dprintf(g_fd, ">c_%d : reg = %d, erroe = %d\n", c->number, s->arena[(c->pos + t + 1) % MEM_SIZE], c->error);
 			}
 		}
 		if (a[p] == 2)
@@ -555,7 +544,7 @@ int get_args(t_core *a, t_carriage *c, short arg[3], short num)//// в зави�
 	if (arg[num] == 1)
 	{
 		ar = a->arena[pos % MEM_SIZE] - 1;
-		if (ar > 16)
+		if (ar > 15 || ar < 0)
 		{
 			c->error += 1;
 			return (0);
@@ -568,14 +557,14 @@ int get_args(t_core *a, t_carriage *c, short arg[3], short num)//// в зави�
 			read_byte4(a->arena, 0, pos, (unsigned char *)&ar);
 		else{
 			read_byte2(a->arena, 0, pos, (unsigned char *)&ar);
-			if (ar > 0x8000)
+			if (ar >= 0x8000)
 				ar = ar - 0xffff - 1;
 		}
 	}
 	else if (arg[num] == 4)
 	{
 		read_byte2(a->arena, 0, pos, (unsigned char *)&ar);
-		if (ar > 0x8000)
+		if (ar >= 0x8000)
 			ar = ar - 0xffff - 1;
 	}
 	return (ar);
@@ -625,41 +614,25 @@ void	functions(t_carriage *c, t_core *a, int f, int i)
 
 int		carret(t_carriage *c, t_core *a, unsigned char *s, int i)
 {
-	if (c->f == 0 && c->cast == 0)
+	if (c->cast == 0 && (s[c->pos] > 16 || s[c->pos] < 1))
 	{
-		if (s[c->pos] <= 16 && s[c->pos] > 0)
-		{
-			c->f = s[c->pos];
-			c->cast = a->op_tab[c->f - 1].cycle - 1;
-		}
-		else
-		{
-			c->pos = (c->pos + 1) % MEM_SIZE;//сдвигаемся на 1 
-			if (s[c->pos] <= 16 && s[c->pos] > 0)
-			{
-				c->f = s[c->pos];
-				c->cast = a->op_tab[c->f - 1].cycle - 1;
-			}
-		}
+		c->pos = (c->pos + 1) % MEM_SIZE;
 		return (0);
 	}
+	if (c->cast == 0 && (s[c->pos] <= 16 && s[c->pos] > 0))
+	{
+		c->f = s[c->pos];
+		c->cast = a->op_tab[c->f - 1].cycle;
+	}
+	c->cast--;
 	if (c->f != 0 && c->cast == 0)
 	{
 		functions(c, a, c->f, -1);
-
 		c->pos = (MEM_SIZE + (c->pos + c->jump) % MEM_SIZE) % MEM_SIZE;
 		c->f = 0;
 		c->jump = 0;
 		c->error = 0;
-		if (s[c->pos] <= 16 && s[c->pos] > 0)
-		{
-			c->f = s[c->pos];
-			c->cast = a->op_tab[c->f - 1].cycle - 1;
-		}
-		return (1);		
 	}
-	if (c->cast > 0)
-		c->cast--;
 	return (0);
 }
 
@@ -674,8 +647,6 @@ void	check_cycles_carret(t_core *a, t_carriage *c, t_carriage *c2)
 		if (c->live < a->last_check)
 		{
 			i++;
-			////printf("carret a[%i] die\n", c->pos);
-			//sleep(5);
 			if (c == a->carrs)
 			{
 				a->carrs = c->next;
@@ -698,19 +669,13 @@ void	check_cycles_carret(t_core *a, t_carriage *c, t_carriage *c2)
 			c2 = c2->next;
 		}
 	}
-	// printf("del | %d | carrets\n", i);
-	// read(0, buff, 1);
 }
 
 void	check_cycles(t_core *a)
 {
-	// a->n_cycles++;
-	//printf("n_c = %d | l_c = %d | c_t_d = %d | n_c-l_c = %d\n", a->n_cycles, a->last_check, a->cycle_to_die, a->n_cycles - a->last_check);
 	if (a->n_cycles - a->last_check == a->cycle_to_die)
 	{
 		ft_bzero(a->live_in_p, (sizeof(int) * 4));
-		//printf("cycle_check\nnb_l = %d\n", a->num_lives);
-		//sleep(5);
 		if (a->num_lives >= NBR_LIVE)
 		{
 			a->cycle_to_die -= CYCLE_DELTA;
@@ -755,9 +720,7 @@ void	print_arena(t_core *a)
 		if (VIS->paint_arena[i].i_live > 0)
 			VIS->paint_arena[i].i_live--;
 	}
-	//print_info_frame(a);
 	wrefresh(VIS->main_win);
-	// wprintw(a->visual_flag->main_win, "\n\n\n\n");
 }
 
 void	print_cycle(t_core *a, t_carriage *c)
@@ -772,27 +735,17 @@ void	print_cycle(t_core *a, t_carriage *c)
 	while(c)
 	{
 		o = carret(c, a, a->arena, 0);
-		// if (o == 1)
-		// 	carret(c, a, a->arena, 0);
-		if (a->n_cycles > 6500 && c->number == 7)
-			dprintf(g_fd, "cycle = %d |^^c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
 		c = c->next;
 		a->carrs_num++;
 	}
 	check_cycles(a);
-	// if (a->n_cycles == a->dump)
-	// {
 	put_colors(a);
 	print_arena(a);
 	print_info_frame(a);
-	// 	VIS->if_run = false;
-	// }
 	a->n_cycles++;
 	if (v_time == 0)
 		VIS->end = clock();
 	v_time++;
-	// dprintf(g_fd, "\ntime_1 = %lu\n", (a->visual->end - a->visual->start));
-	// dprintf(g_fd, "time_2 = %f\n\n", (double)((a->visual->end - a->visual->start) / CLOCKS_PER_SEC));
 }
 
 //abulakh for fast dump
@@ -825,17 +778,7 @@ void	print_cycle_dump(t_core *a, t_carriage *c, int type)
 	c = a->carrs;
 	while(c)
 	{
-		if (a->n_cycles == 7184 && c->cast == 0)
-			dprintf(g_fd, "!!!cycle = %d | c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
 		o = carret(c, a, a->arena, 0);
-		if (a->n_cycles == 7207 && c->pos >= 2795 && c->pos <= 2805 && c->f == 3)
-			dprintf(g_fd, "cycle = %d |^^c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
-		if (a->n_cycles > 6500 && c->number == 7)
-			dprintf(g_fd, "cycle = %d |^^c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
-		if (a->n_cycles == 7183 && c->pos == 2781)
-			dprintf(g_fd, "!!!cycle = %d | c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
-		if (a->n_cycles > 7183 && c->number == 37)
-			dprintf(g_fd, "!!37!cycle = %d | c_%d | c_pos = %d | c_f = %d | c_cast %d\n", a->n_cycles, c->number, c->pos, c->f, c->cast);
 		c = c->next;
 		a->carrs_num++;
 	}
@@ -889,7 +832,6 @@ void	fight(t_core *a, t_carriage *c)
 		}
 		if (VIS->if_run)
 			print_cycle(a, c);
-		// print_info_frame(a);
 	}
 	dprintf(g_fd, "WINNER - PLAYER №%i\n", a->last_say_live);
 }
@@ -919,11 +861,10 @@ void	fight_dump(t_core *a, t_carriage *c)
 	print_cycle_dump(a, c, 0);
 	while (a->cycle_to_die > 0 && a->carrs && a->n_cycles < a->dump)
 	{
-		//dprintf(g_fd, "n_cycles = %d\n", a->n_cycles);
 		print_cycle_dump(a, c, 0);
 	}
 	print_cycle_dump(a, c, 1);
-	//dprintf(g_fd, "WINNER - PLAYER №%i\n", a->last_say_live);
+	//system("leaks corewar");
 }
 
 

@@ -1,1 +1,1 @@
-./mass_checker.zsh champs/championships/2014/hmoutaou/Misaka_Mikoto.cor champs/championships/2014/hmichals/Wall.cor champs/championships/2014/brandazz/Rainbow_dash.cor champs/championships/2014/gudepard/Kappa.cor
+./mass_checker.zsh ./champs/maxidef.cor ./champs/examples/helltrain.cor ./champs/championships/2014/rmasse/THUNDER.cor ./champs/championships/2014/rmasse/THUNDER.cor
