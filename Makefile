@@ -3,6 +3,7 @@ SRC_DIR = ./src/
 INC_DIR = ./include/
 LIB_DIR = ./libft/
 # BIN_DIR = ./objects/
+ERRFL = -Wall -Wextra -Werror
 
 CUR_FLAG =  -lncurses
 

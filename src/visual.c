@@ -23,7 +23,6 @@ static void				print_info2(t_core *a, int row)
 		CLEAR_LINE, a->live_in_p[i++]);
 		tmp = tmp->next;
 	}
-	// wattron(VIS->info_win, COLOR_PAIR(COLOR_WHITE) | A_BOLD);
 	mvwprintw(VIS->info_win, (row += 2), 4, "CYCLE_TO_DIE :\t%-*d",
 	CLEAR_LINE, a->cycle_to_die);
 	mvwprintw(VIS->info_win, (row += 2), 4, "CYCLE_DELTA :\t%-*d",
@@ -32,8 +31,6 @@ static void				print_info2(t_core *a, int row)
 	CLEAR_LINE, NBR_LIVE);
 	mvwprintw(VIS->info_win, (row += 2), 4, "MAX_CHECKS :\t%-*d",
 	CLEAR_LINE, MAX_CHECKS);
-	// wattroff(VIS->info_win, COLOR_PAIR(COLOR_WHITE) | A_BOLD);
-	// wrefresh(VIS->info_win);
 }
 
 void	print_arr(t_core *a)
@@ -90,30 +87,26 @@ void	make_frame(WINDOW *win, int color)
 void	put_player_colors(t_core *a)
 {
 	int			i;
-	int			j;
 	int			step;
 	t_player	*tmp;
 
-	j = 0;
 	i = 0;
 	tmp = a->players;
-	dprintf(g_fd, "CHECK HERE291\n");
+	step = 0;
 	while (i < MEM_SIZE)
 	{
-		dprintf(g_fd, "CHECK HERE292\n");
-		while (i < tmp->length + j)
+		while (tmp && i < tmp->length + step)
 			VIS->paint_arena[i++].default_clr = VIS->clr[tmp->number - 1].st_clr;
-		if (tmp->number <= a->num_pl)
+		if (tmp)
 		{
-			dprintf(g_fd, "CHECK HERE293 = %d\n", tmp->number);
-			j += PLAYER_FIELD;
+			step += PLAYER_FIELD;
+			// step = a->num_pl % 2 == 0 ? step : step + 1;
 			tmp = tmp->next;
 		}
-		while (i < j)
+		if (!tmp && a->num_pl % 2 != 0)
+			step++;
+		while (i < step)
 			VIS->paint_arena[i++].default_clr = VIS->clr[COLOR_NUM - 1].st_clr;
-		if (a->num_pl == 3 && tmp == NULL)
-			VIS->paint_arena[i++].default_clr = VIS->clr[COLOR_NUM - 1].st_clr;
-		dprintf(g_fd, "CHECK HERE293 i = %d\n", i);
 	}
 }
 
@@ -144,40 +137,19 @@ void		put_colors(t_core *a)
 	{
 		if (i >= diff * PLAYER_FIELD)
 			diff++;
-		// if (VIS->paint_arena[i].is_st > 0)
-		// 	VIS->paint_arena[i].default_clr = VIS->paint_arena[i].color;
 		if (VIS->paint_arena[i].not_in_field == 0)
 			VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr;
+		else
+			VIS->paint_arena[i].not_in_field--;
 		tmp = search_carriage(a, i);
 		if (VIS->paint_arena[i].i_live > 0)
-		{
-			if (VIS->paint_arena[i].color != VIS->paint_arena[i].default_clr)
-				VIS->paint_arena[i].color = VIS->paint_arena[i].color + 1;
-			else
-				VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr + 1;
-			// dprintf(g_fd, "LIVE\n");
-			// dprintf(g_fd, "%d\n", VIS->paint_arena[i].default_clr);
-		}
+			VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr + 1;
 		else if (tmp)
 		{
-			// pl = -tmp->player;
 			if (VIS->paint_arena[i].default_clr == VIS->clr[COLOR_NUM - 1].st_clr)
 				VIS->paint_arena[i].color = VIS->clr[COLOR_NUM - 1].c_clr;
 			else
 				VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr - 1;
-			
-			// if (i > tmp->len_of_player + ((diff - 1) * PLAYER_FIELD) && VIS->paint_arena[i].default_clr == VIS->clr[COLOR_NUM - 1].st_clr)
-			// {
-			// 	// dprintf(g_fd, "i = %d, len_of_player %d\n", i, tmp->len_of_player);
-			// 	// dprintf(g_fd, "(diff - 1) * PLAYER_FIELD) %d\n", (diff - 1) * PLAYER_FIELD);
-			// 	VIS->paint_arena[i].color = VIS->clr[COLOR_NUM - 1].c_clr;
-			// }
-			// else
-			// {
-			// 	dprintf(g_fd, "CYCLE: %d\n", a->n_cycles);
-			// 	dprintf(g_fd, "pos: %d, VIS->clr[pl - 1].c_clr %d\n", i, VIS->clr[pl - 1].c_clr);
-			// 	VIS->paint_arena[i].color = VIS->clr[pl - 1].c_clr;
-			// }
 		}
 		
 	}
@@ -196,13 +168,11 @@ void	create_col_pairs(t_core *a)
 		COLOR_BIRUSA, COLOR_BLACK,
 		8, COLOR_BLACK
 	};
-	indx = 0;
+	indx = -1;
 	clr_indx = 0;
 	num_of_pair = 0;
 	tmp = VIS->clr;
-	dprintf(g_fd, "COLORS %d\n", COLORS);
-	dprintf(g_fd, "COLOR_PAIRS %d\n\n\n", COLOR_PAIRS);
-	while (indx < COLOR_NUM)
+	while (++indx < COLOR_NUM)
 	{
 		num_of_pair += 10;
 		tmp[indx].c_clr = num_of_pair++;
@@ -211,16 +181,18 @@ void	create_col_pairs(t_core *a)
 		init_pair(tmp[indx].st_clr, p_colors[clr_indx], p_colors[clr_indx + 1]);
 		tmp[indx].live_clr = num_of_pair;
 		init_pair(tmp[indx].live_clr, COLOR_WHITE, p_colors[clr_indx]);
-		indx++;
 		clr_indx += 2;
 	}
 }
 
 void	initialize(t_core *a)
 {
-	dprintf(g_fd, "CHECK HERE22\n");
+	// dprintf(g_fd, "CHECK HERE22\n");
 	VIS = (t_win *)ft_memalloc(sizeof(t_win));
 	VIS->if_run = false;
+	VIS->vremya = clock();
+	VIS->c_per_s = ST_CYC_PER_SEC;
+	// dprintf(g_fd, "clock = %lu\nclock_2 = %d", VIS->vremya, tmp);
 	initscr();
 	keypad(stdscr, true);
 	nodelay(stdscr, true);
@@ -235,14 +207,8 @@ void	initialize(t_core *a)
 	make_frame(VIS->main_win, COLOR_PAIR(FRAME));
 	VIS->info_win = newwin(HEIGTH, INFO_WDTH, 0, MAIN_WDTH - 1);
 	make_frame(VIS->info_win, COLOR_PAIR(FRAME));
-	dprintf(g_fd, "CHECK HERE28\n");
 	create_col_pairs(a);
-	dprintf(g_fd, "CHECK HERE29\n");
 	put_player_colors(a);
-	dprintf(g_fd, "CHECK HERE210\n");
 	put_colors(a);
-	dprintf(g_fd, "CHECK HERE211\n");
-	print_arena(a);
-	dprintf(g_fd, "CHECK HERE212\n");
 	refresh();
 }

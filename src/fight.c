@@ -30,11 +30,8 @@ void	print_arena(t_core *a)
 
 void	print_cycle(t_core *a, t_carriage *c, int first_step)
 {
-	static int	v_time;
 	int		o;
 
-	if (v_time == 0)
-		VIS->start = clock();
 	a->carrs_num = 0;
 	c = a->carrs;
 	a->n_cycles = !first_step ? a->n_cycles + 1 : a->n_cycles;
@@ -48,20 +45,20 @@ void	print_cycle(t_core *a, t_carriage *c, int first_step)
 	{
 		put_colors(a);
 		print_arena(a);
-		VIS->if_run = false;
+		// VIS->if_run = false;
 	}
 	else if (!a->dump || a->n_cycles > a->dump)
 	{
 		put_colors(a);
 		print_arena(a);
 	}
-	if (v_time == 0)
-		VIS->end = clock();
-	v_time++;
 }
 
-void	check_cyc_per_sec(t_core *a, char ch)
+bool	check_cyc_per_sec(t_core *a, char ch)
 {
+	int tmp;
+
+	tmp = VIS->c_per_s;
 	if (ch == MINUS_BIG)
 		VIS->c_per_s -= BIG_STEP;
 	if (ch == PLUS_BIG)
@@ -70,10 +67,11 @@ void	check_cyc_per_sec(t_core *a, char ch)
 		VIS->c_per_s -= SMALL_STEP;
 	if (ch == PLUS_SMALL)
 		VIS->c_per_s += SMALL_STEP;
-	if (VIS->c_per_s < 0)
-		VIS->c_per_s = 0;
-	if (VIS->c_per_s > 1000)
-		VIS->c_per_s = 1000;
+	(VIS->c_per_s < 1) && (VIS->c_per_s = 1);
+	(VIS->c_per_s > 1000) && (VIS->c_per_s = 1000);
+	if (tmp != VIS->c_per_s)
+		return (false);
+	return (true);
 }
 
 void	fight(t_core *a, t_carriage *c)
@@ -83,12 +81,12 @@ void	fight(t_core *a, t_carriage *c)
 	system("clear");
 	initialize(a);
 	print_cycle(a, c, 1);
+	print_info_frame(a);
 	a->visual_flag = 1;
 	VIS->if_run = 0;
 	while (a->cycle_to_die > 0 && a->carrs)
 	{
 		ch = getch();
-		check_cyc_per_sec(a, ch);
 		if (ch == RUN)
 			VIS->if_run = !VIS->if_run;
 		else if (ch == ONE_CYCLE_PASS)
@@ -96,13 +94,21 @@ void	fight(t_core *a, t_carriage *c)
 			print_cycle(a, c, 0);
 			// a->n_cycles++;
 			VIS->if_run = false;
+			print_info_frame(a);
 		}
-		if (VIS->if_run)
+		// if (check_cyc_per_sec(a, ch))
+		if (VIS->if_run)//&& clock() >= SHOW_REGULATOR)
 		{
+			dprintf(g_fd, "sec: %d	clock = %lu\nclock_2 = %lu\n\n", VIS->c_per_s, clock(), SHOW_REGULATOR);
 			print_cycle(a, c, 0);
+			VIS->vremya = clock();
+			// print_info_frame(a);
+			// if (a->n_cycles == a->dump)
+			// 	VIS->if_run = false;
 			// a->n_cycles++;
 		}
 		print_info_frame(a);
 	}
 	dprintf(g_fd, "WINNER - PLAYER №%i\n", a->last_say_live);
+	//нужно будет потом удалить окна
 }

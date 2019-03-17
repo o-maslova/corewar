@@ -91,7 +91,9 @@ struct					s_player
 };
 
 void					make_core2(t_core *a);
+int						carret(t_carriage *c, t_core *a, unsigned char *s);
 void					print_arena(t_core *a);
+void					fight(t_core *a, t_carriage *c);
 int						get_args(t_core *a, t_carriage *c, short arg[3], short num);
 void					read_byte2(unsigned char *a, int pos, int pos2, unsigned char *num);
 void					read_byte4(unsigned char *a, int pos, int pos2, unsigned char *num);

@@ -7,7 +7,7 @@
 #include "op.h"
 
 #define CLEAR_LINE		20
-#define CYCLE_PER_SEC	((a->visual->end - a->visual->start) / CLOCKS_PER_SEC)
+#define SHOW_REGULATOR	(VIS->vremya + CLOCKS_PER_SEC / (VIS->c_per_s * 2))
 
 #define BCHAR			'*'
 #define HEIGTH			(MEM_SIZE / 64 + 4)
@@ -22,10 +22,9 @@
 #define PLUS_BIG		'r'
 #define PLUS_SMALL		'e'
 
-#define DUMP			'x' //need to delete
-
 #define SMALL_STEP		1
 #define BIG_STEP		10
+#define ST_CYC_PER_SEC	50
 
 #define FRAME			100
 #define COLOR_GREY		80
@@ -73,8 +72,7 @@ struct					s_paint
 struct					s_win
 {
 	bool				if_run;
-	clock_t				start;
-	clock_t				end;
+	clock_t				vremya;
 	int					c_per_s; // cycle per second
 	t_paint				paint_arena[MEM_SIZE];
 	t_color				clr[MAX_PLAYERS + 1];
