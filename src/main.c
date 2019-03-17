@@ -638,18 +638,14 @@ int		carret(t_carriage *c, t_core *a, unsigned char *s, int i)
 
 void	check_cycles_carret(t_core *a, t_carriage *c, t_carriage *c2)
 {
-	char	buff[1];
-	int		i;
-
-	i = 0;
 	while (c)
 	{
 		if (c->live < a->last_check)
 		{
-			i++;
 			if (c == a->carrs)
 			{
 				a->carrs = c->next;
+				a->carrs_num--;
 				free(c);
 				c = a->carrs;
 				c2 = a->carrs;
@@ -657,6 +653,7 @@ void	check_cycles_carret(t_core *a, t_carriage *c, t_carriage *c2)
 			else
 			{
 				c2->next = c->next;
+				a->carrs_num--;
 				free(c);
 				c = c2->next;
 			}
@@ -738,10 +735,19 @@ void	print_cycle(t_core *a, t_carriage *c)
 		c = c->next;
 		a->carrs_num++;
 	}
-	check_cycles(a);
-	put_colors(a);
-	print_arena(a);
-	print_info_frame(a);
+	if (a->dump && a->n_cycles == a->dump)
+	{
+		put_colors(a);
+		print_arena(a);
+		print_info_frame(a);
+		VIS->if_run = false;
+	}
+	else if (!a->dump || a->n_cycles > a->dump)
+	{
+		put_colors(a);
+		print_arena(a);
+		print_info_frame(a);
+	}
 	a->n_cycles++;
 	if (v_time == 0)
 		VIS->end = clock();
