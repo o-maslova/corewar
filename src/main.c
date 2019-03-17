@@ -439,7 +439,7 @@ int		byte_cal(short *a, int i, t_core *s, t_carriage *c)
 			t += 1;
 			if (s->arena[(c->pos + t + 1) % MEM_SIZE] > 16 || s->arena[(c->pos + t + 1) % MEM_SIZE] < 1)
 			{
-				dprintf(g_fd, "ERROR CHECK THIS\n");
+				//dprintf(g_fd, "ERROR CHECK THIS\n");
 				c->error++;
 			}
 		}
@@ -644,13 +644,14 @@ void	check_cycles_carret(t_core *a, t_carriage *c, t_carriage *c2)
 	i = 0;
 	while (c)
 	{
-		if (c->live < a->last_check)
+		if (c->live <= a->last_check)
 		{
 			i++;
 			if (c == a->carrs)
 			{
 				a->carrs = c->next;
 				free(c);
+				//a->carrs_num--;
 				c = a->carrs;
 				c2 = a->carrs;
 			}
@@ -658,6 +659,7 @@ void	check_cycles_carret(t_core *a, t_carriage *c, t_carriage *c2)
 			{
 				c2->next = c->next;
 				free(c);
+				//a->carrs_num--;
 				c = c2->next;
 			}
 		}
@@ -736,9 +738,15 @@ void	print_cycle(t_core *a, t_carriage *c)
 	{
 		o = carret(c, a, a->arena, 0);
 		c = c->next;
-		a->carrs_num++;
+		//a->carrs_num++;
 	}
 	check_cycles(a);
+	c = a->carrs;
+	while (c)
+	{
+		a->carrs_num++;
+		c = c->next;
+	}
 	put_colors(a);
 	print_arena(a);
 	print_info_frame(a);

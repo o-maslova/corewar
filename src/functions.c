@@ -38,7 +38,7 @@ void	f2_f13(t_core *a, t_carriage *c, int f)
 		if (f == 0 && i % IDX_MOD != i)
 		{
 			i %= IDX_MOD;
-			read_byte4((unsigned char *)&i, c->pos + 2, 0, a->arena);
+			//read_byte2((unsigned char *)&i, c->pos + 2, 0, a->arena);
 		}
 		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + i) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&i);
 	}
@@ -70,6 +70,8 @@ void	f3(t_core *a, t_carriage *c)
 	h = get_args(a, c, arg, 1);
 	h %= IDX_MOD;
 	write_reg(a->arena, c->r[i], (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE, 0);
+	if ((a->n_cycles == 17694 || a->n_cycles == 17695) && (MEM_SIZE + (c->pos + h) % MEM_SIZE) > 3072 && (MEM_SIZE + (c->pos + h) % MEM_SIZE) < 3150)
+		dprintf(g_fd, "c_%d | c->pos = %d | reg_%d |%x|%x|%x|%x|\n", c->number, c->pos, i, c->r[i][0], c->r[i][1], c->r[i][2], c->r[i][3]);
 	while (a->visual_flag == 1 && ++tmp < 4)
 	{
 		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].is_st = 50;
@@ -258,6 +260,8 @@ void	f11(t_core *a, t_carriage *c)
 		read_byte4(a->arena, 0, c->pos + (h % IDX_MOD), (unsigned char *)&h);
 	h = (h + p) % IDX_MOD;
 	write_reg(a->arena, c->r[i], (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE, 0);
+	if ((a->n_cycles == 17694 || a->n_cycles == 17695) && (MEM_SIZE + (c->pos + h) % MEM_SIZE) > 3072 && (MEM_SIZE + (c->pos + h) % MEM_SIZE) < 3150)
+		dprintf(g_fd, "11| c_%d | c->pos = %d | reg_%d |%x|%x|%x|%x|\n", c->number, c->pos, i, c->r[i][0], c->r[i][1], c->r[i][2], c->r[i][3]);
 	while (a->visual_flag == 1 && ++tmp < 4)
 	{
 		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].is_st = 50;

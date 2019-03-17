@@ -1,1 +1,1 @@
-./corewar -d 17000 ./vm_champs/champs/examples/helltrain.cor ./vm_champs/champs/championships/2014/rmasse/THUNDER.cor ./vm_champs/champs/championships/2014/rmasse/THUNDER.cor ./vm_champs/champs/maxidef.cor
+./corewar ./vm_champs/champs/jumper.cor ./vm_champs/champs/jumper.cor ./vm_champs/champs/jumper.cor ./vm_champs/champs/jumper.cor
