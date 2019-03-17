@@ -11,7 +11,8 @@ LIB = libft.a
 SRC = op.c \
 		main.c \
 		visual.c \
-		functions.c
+		functions.c \
+		fight.c
 
 INCLUDES = ./op.h ./corelib.h ./visualization.h
 

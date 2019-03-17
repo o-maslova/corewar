@@ -100,7 +100,6 @@ void	put_player_colors(t_core *a)
 		if (tmp)
 		{
 			step += PLAYER_FIELD;
-			// step = a->num_pl % 2 == 0 ? step : step + 1;
 			tmp = tmp->next;
 		}
 		if (!tmp && a->num_pl % 2 != 0)
@@ -137,13 +136,23 @@ void		put_colors(t_core *a)
 	{
 		if (i >= diff * PLAYER_FIELD)
 			diff++;
-		if (VIS->paint_arena[i].not_in_field == 0)
-			VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr;
-		else
+		if (VIS->paint_arena[i].not_in_field != 0)
 			VIS->paint_arena[i].not_in_field--;
+		if (VIS->paint_arena[i].not_in_field == 0)
+		{
+			VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr;
+			dprintf(g_fd, "not int field %d\n", VIS->paint_arena[i].not_in_field);
+		}
 		tmp = search_carriage(a, i);
-		if (VIS->paint_arena[i].i_live > 0)
+		if (VIS->paint_arena[i].i_live > 0 && VIS->paint_arena[i].not_in_field == 0)
+		{
+			if (a->n_cycles == 11222)
+			{
+				print_arr(a);
+				dprintf(g_fd, "default: %d, color: %d\n", VIS->paint_arena[i].default_clr, VIS->paint_arena[i].color);
+			}
 			VIS->paint_arena[i].color = VIS->paint_arena[i].default_clr + 1;
+		}
 		else if (tmp)
 		{
 			if (VIS->paint_arena[i].default_clr == VIS->clr[COLOR_NUM - 1].st_clr)

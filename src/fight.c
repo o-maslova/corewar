@@ -52,6 +52,7 @@ void	print_cycle(t_core *a, t_carriage *c, int first_step)
 		put_colors(a);
 		print_arena(a);
 	}
+	check_cycles(a);
 }
 
 bool	check_cyc_per_sec(t_core *a, char ch)
@@ -99,7 +100,7 @@ void	fight(t_core *a, t_carriage *c)
 		// if (check_cyc_per_sec(a, ch))
 		if (VIS->if_run)//&& clock() >= SHOW_REGULATOR)
 		{
-			dprintf(g_fd, "sec: %d	clock = %lu\nclock_2 = %lu\n\n", VIS->c_per_s, clock(), SHOW_REGULATOR);
+			// dprintf(g_fd, "sec: %d	clock = %lu\nclock_2 = %lu\n\n", VIS->c_per_s, clock(), SHOW_REGULATOR);
 			print_cycle(a, c, 0);
 			VIS->vremya = clock();
 			// print_info_frame(a);

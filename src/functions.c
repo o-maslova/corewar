@@ -12,7 +12,14 @@ void	f1(t_core *a, t_carriage *c)
 	if (i <= a->num_pl && i > 0)
 	{
 		if (a->visual_flag == 1)
-			a->visual->paint_arena[c->pos].i_live = 50;
+		{
+			VIS->paint_arena[c->pos].i_live = 50;
+			if (VIS->paint_arena[c->pos].default_clr != VIS->clr[-c->player - 1].st_clr)
+			{
+				VIS->paint_arena[c->pos].not_in_field = 50;
+				VIS->paint_arena[c->pos].color = VIS->clr[-c->player - 1].live_clr;
+			}
+		}
 		a->live_in_p[i - 1] += 1;
 		a->last_say_live = i;
 		a->n[i - 1] = a->n_cycles;
@@ -276,17 +283,13 @@ void	f12_f15_duplicate_carret(t_carriage *c, t_core *a, int pos)
 	int			i;
 	int			p;
 
-	if (!(new = malloc(sizeof(t_carriage))))
+	if (!(new = ft_memalloc(sizeof(t_carriage))))
 		free_all(a, "malloc error");
 	new->player = c->player;
 	new->len_of_player = c->len_of_player;
-	new->jump = 0;
 	new->live = c->live;
-	new->error = 0;
 	new->number = a->carrs->number + 1;
 	new->pos = (MEM_SIZE + (c->pos + pos) % MEM_SIZE) % MEM_SIZE;
-	new->f = 0;
-	new->cast = 0;
 	new->carry = c->carry;
 	i = 0;
 	while (i < REG_NUMBER)
@@ -298,6 +301,7 @@ void	f12_f15_duplicate_carret(t_carriage *c, t_core *a, int pos)
 	}
 	new->next = a->carrs;
 	a->carrs = new;
+	a->carrs_num++;
 }
 
 void	f12_f15(t_core *a, t_carriage *c, int p)
