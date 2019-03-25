@@ -65,8 +65,8 @@ do
 		DIFF=${PREFIX}diff_$i
 	done
 	echo -n > $DIFF; echo -n > $ORIG_LOG; echo -n > $OURS_LOG
-	./corewar -d 16180 $VMAV > $ORIG_LOG &
-	../corewar -d 16180 $VMAV > $OURS_LOG 2>> $ERR_F &
+	./corewar -d 20370 $VMAV > $ORIG_LOG &
+	../corewar -d 20370 $VMAV > $OURS_LOG 2>> $ERR_F &
 	if [[ $(cat $ERR_F) ]]; then
 		printf $RED; cat $ERR_F; printf $RESET
 		rm -f $ERR_F; exit 1

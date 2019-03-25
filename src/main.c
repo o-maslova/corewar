@@ -143,6 +143,7 @@ int		check_ret(int *t, int i)
 {
 	close (*t);
 	*t = i;
+	exit(0);
 	return (-1);
 }
 
@@ -628,6 +629,8 @@ int		carret(t_carriage *c, t_core *a, unsigned char *s, int i)
 	if (c->f != 0 && c->cast == 0)
 	{
 		functions(c, a, c->f, -1);
+		// if (c->number == 1708)
+		// 	dprintf(g_fd, "c_%d | c->pos = %d |%x|%x|%x|%x|\n", c->number, c->pos, c->r[10][0], c->r[10][1], c->r[10][2], c->r[10][3]);
 		c->pos = (MEM_SIZE + (c->pos + c->jump) % MEM_SIZE) % MEM_SIZE;
 		c->f = 0;
 		c->jump = 0;
@@ -747,9 +750,12 @@ void	print_cycle(t_core *a, t_carriage *c)
 		a->carrs_num++;
 		c = c->next;
 	}
-	put_colors(a);
-	print_arena(a);
-	print_info_frame(a);
+	if (a->n_cycles > 17250)
+	{
+		put_colors(a);
+		print_arena(a);
+		print_info_frame(a);
+	}
 	a->n_cycles++;
 	if (v_time == 0)
 		VIS->end = clock();
