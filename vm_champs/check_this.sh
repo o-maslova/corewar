@@ -1,1 +1,1 @@
-./corewar -n ./champs/examples/helltrain.cor ./champs/championships/2014/rmasse/THUNDER.cor ./champs/championships/2014/rmasse/THUNDER.cor ./champs/maxidef.cor
+./corewar -d 20370 ./champs/ex.cor ./champs/jumper.cor ./champs/Car.cor ./champs/championships/2014/lsirigna/live.cor

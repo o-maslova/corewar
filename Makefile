@@ -10,9 +10,11 @@ CUR_FLAG =  -lncurses
 LIB = libft.a
 SRC = op.c \
 		main.c \
-		visual.c \
-		functions.c \
-		fight.c
+		functions_2.c \
+		fight.c \
+		initialization.c \
+		print.c \
+		colors.c
 
 INCLUDES = ./op.h ./corelib.h ./visualization.h
 
