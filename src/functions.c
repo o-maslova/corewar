@@ -1,4 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   functions_2.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omaslova <omaslova@student.unit.ua>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/26 12:08:04 by omaslova          #+#    #+#             */
+/*   Updated: 2019/03/26 12:08:10 by omaslova         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "corelib.h"
+#define MOD(p, i, tmp)	((MEM_SIZE + (p + i + tmp) % MEM_SIZE) % MEM_SIZE)
 
 void	f1(t_core *a, t_carriage *c)
 {
@@ -14,17 +27,17 @@ void	f1(t_core *a, t_carriage *c)
 	{
 		if (a->visual_flag == 1)
 		{
-			VIS->paint_arena[c->pos].i_live = 50;
-			if (VIS->paint_arena[c->pos].default_clr != VIS->clr[-c->player - 1].st_clr)
+			ELEM(c->pos).live = 50;
+			ELEM(c->pos).color = VIS->clr[-(c->player) - 1].live_clr;
+			if (ELEM(c->pos).default_clr != VIS->clr[-(c->player) - 1].st_clr)
 			{
-				VIS->paint_arena[c->pos].not_in_field = 50;
-				VIS->paint_arena[c->pos].color = VIS->clr[-c->player - 1].live_clr;
+				dprintf(g_fd, "default color: %d, player color: %d\n cycle: %d, player: %d\n\n", ELEM(c->pos).default_clr, a->n_cycles, VIS->clr[-(c->player) - 1].st_clr, -(c->player));
+				ELEM(c->pos).in_field = 50;
 			}
 		}
 		a->live_in_p[i - 1] += 1;
 		a->last_say_live = i;
 		a->n[i - 1] = a->n_cycles;
-		//a->num_lives++;
 	}
 	c->jump = 5;
 }
@@ -48,7 +61,7 @@ void	f2_f13(t_core *a, t_carriage *c, int f)
 			i %= IDX_MOD;
 			//read_byte2((unsigned char *)&i, c->pos + 2, 0, a->arena);
 		}
-		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + i) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&i);
+		read_byte4(a->arena, 0, MOD(c->pos, i, 0), (unsigned char *)&i);
 	}
 	read_byte4((unsigned char *)&i, 0, 0, c->r[h]);
 	c->carry = 0;
@@ -77,12 +90,12 @@ void	f3(t_core *a, t_carriage *c)
 	}
 	h = get_args(a, c, arg, 1);
 	h %= IDX_MOD;
-	write_reg(a->arena, c->r[i], (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE, 0);
+	write_reg(a->arena, c->r[i], MOD(c->pos, h, 0), 0);
 	while (a->visual_flag == 1 && ++tmp < 4)
 	{
-		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].is_st = 50;
-		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].default_clr =
-		VIS->clr[-(c->player) - 1].st_clr;;
+		ELEM(MOD(c->pos, h, tmp)).st = 50;
+		// if (ELEM(MOD(c->pos, h, tmp)).default_clr == VIS->clr[COLOR_NUM - 1].st_clr)
+		ELEM(MOD(c->pos, h, tmp)).default_clr = VIS->clr[-(c->player) - 1].st_clr;
 	}
 }
 
@@ -150,9 +163,9 @@ void	f6(t_core *a, t_carriage *c)
 	if (c->error != 0)
 		return ;
 	if (arg[0] == 4)
-		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + i % IDX_MOD) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&i);
+		read_byte4(a->arena, 0, MOD(c->pos, i % IDX_MOD, 0), (unsigned char *)&i);
 	if (arg[1] == 4)
-		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + p % IDX_MOD) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&p);
+		read_byte4(a->arena, 0, MOD(c->pos, p % IDX_MOD, 0), (unsigned char *)&p);
 	i = i & p;
 	p = 0;
 	while (p < REG_SIZE)
@@ -166,10 +179,10 @@ void	f6(t_core *a, t_carriage *c)
 
 void	f7(t_core *a, t_carriage *c)    ///3820
 {
-	short			arg[3];
-	int	i;
-	int	h;
-	int				p;
+	short	arg[3];
+	int		i;
+	int		h;
+	int		p;
 
 	p = 0;
 	c->error = function_codage(a, c, arg);
@@ -180,9 +193,9 @@ void	f7(t_core *a, t_carriage *c)    ///3820
 	if (c->error != 0)
 		return ;
 	if (arg[0] == 4)
-		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + i % IDX_MOD) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&i);
+		read_byte4(a->arena, 0, MOD(c->pos, i % IDX_MOD, 0), (unsigned char *)&i);
 	if (arg[1] == 4)
-		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + p % IDX_MOD) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&p);
+		read_byte4(a->arena, 0, MOD(c->pos, p % IDX_MOD, 0), (unsigned char *)&p);
 	i = i | p;
 	p = 0;
 	while (p < REG_SIZE)
@@ -196,10 +209,10 @@ void	f7(t_core *a, t_carriage *c)    ///3820
 
 void	f8(t_core *a, t_carriage *c)
 {
-	short			arg[3];
-	int	i;
-	int	h;
-	int				p;
+	short	arg[3];
+	int		i;
+	int		h;
+	int		p;
 
 	p = 0;
 	c->error = function_codage(a, c, arg);
@@ -210,9 +223,9 @@ void	f8(t_core *a, t_carriage *c)
 	if (c->error != 0)
 		return ;
 	if (arg[0] == 4)
-		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + i % IDX_MOD) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&i);
+		read_byte4(a->arena, 0, MOD(c->pos, p % IDX_MOD, 0), (unsigned char *)&i);
 	if (arg[1] == 4)
-		read_byte4(a->arena, 0, (MEM_SIZE + (c->pos + p % IDX_MOD) % MEM_SIZE) % MEM_SIZE, (unsigned char *)&p);
+		read_byte4(a->arena, 0, MOD(c->pos, p % IDX_MOD, 0), (unsigned char *)&p);
 	i = i ^ p;
 	p = 0;
 	while (p < REG_SIZE)
@@ -253,9 +266,9 @@ void	f10(t_core *a, t_carriage *c)
 	i = get_args(a, c, arg, 0);
 	h = get_args(a, c, arg, 1);
 	if (arg[0] == 4)
-		read_byte4(a->arena, 0, (MEM_SIZE + c->pos + (i % IDX_MOD)) % MEM_SIZE, (unsigned char *)&i);
+		read_byte4(a->arena, 0,  MOD(c->pos, i % IDX_MOD, 0), (unsigned char *)&i);
 	i = (i + h) % IDX_MOD;
-	write_reg(c->r[p], a->arena, 0, (MEM_SIZE + c->pos + i) % MEM_SIZE);
+	write_reg(c->r[p], a->arena, 0, MOD(c->pos, i, 0));
 }
 
 void	f11(t_core *a, t_carriage *c)
@@ -280,9 +293,9 @@ void	f11(t_core *a, t_carriage *c)
 	write_reg(a->arena, c->r[i], (MEM_SIZE + (c->pos + h) % MEM_SIZE) % MEM_SIZE, 0);
 	while (a->visual_flag == 1 && ++tmp < 4)
 	{
-		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].is_st = 50;
-		VIS->paint_arena[(MEM_SIZE + (c->pos + h + tmp) % MEM_SIZE) % MEM_SIZE].default_clr = 
-		VIS->clr[-(c->player) - 1].st_clr;
+		ELEM(MOD(c->pos, h, tmp)).st = 50;
+		// if (ELEM(MOD(c->pos, h, tmp)).default_clr == VIS->clr[COLOR_NUM - 1].st_clr)
+		ELEM(MOD(c->pos, h, tmp)).default_clr = VIS->clr[-(c->player) - 1].st_clr;
 	}
 }
 
@@ -298,7 +311,7 @@ void	f12_f15_duplicate_carret(t_carriage *c, t_core *a, int pos)
 	new->len_of_player = c->len_of_player;
 	new->live = c->live;
 	new->number = a->carrs->number + 1;
-	new->pos = (MEM_SIZE + (c->pos + pos) % MEM_SIZE) % MEM_SIZE;
+	new->pos = MOD(c->pos, pos, 0);
 	new->carry = c->carry;
 	i = 0;
 	while (i < REG_NUMBER)
@@ -349,7 +362,7 @@ void	f14(t_core *a, t_carriage *c)
 	if (arg[0] == 4)
 		read_byte4(a->arena, 0, c->pos + (i % IDX_MOD), (unsigned char *)&i);
 	i = i + h;
-	write_reg(c->r[p], a->arena, 0, (MEM_SIZE + ((c->pos + i) % MEM_SIZE)) % MEM_SIZE);
+	write_reg(c->r[p], a->arena, 0, MOD(c->pos, i, 0));
 }
 
 void	f16(t_core *a, t_carriage *c)
