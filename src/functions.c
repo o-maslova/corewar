@@ -31,7 +31,7 @@ void	f1(t_core *a, t_carriage *c)
 			ELEM(c->pos).color = VIS->clr[-(c->player) - 1].live_clr;
 			if (ELEM(c->pos).default_clr != VIS->clr[-(c->player) - 1].st_clr)
 			{
-				dprintf(g_fd, "default color: %d, player color: %d\n cycle: %d, player: %d\n\n", ELEM(c->pos).default_clr, a->n_cycles, VIS->clr[-(c->player) - 1].st_clr, -(c->player));
+				// dprintf(g_fd, "default color: %d, player color: %d\n cycle: %d, player: %d\n\n", ELEM(c->pos).default_clr, a->n_cycles, VIS->clr[-(c->player) - 1].st_clr, -(c->player));
 				ELEM(c->pos).in_field = 50;
 			}
 		}

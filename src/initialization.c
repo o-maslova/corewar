@@ -19,7 +19,7 @@ void				make_frame(WINDOW *win, int color)
 	wattroff(win, color | A_BOLD);
 }
 
-static void			fill_the_array(t_core *a, short p_colors[COLOR_NUM * 2])
+static void			fill_the_array(t_core *a)
 {
 	int			indx;
 	int			clr_indx;
@@ -27,35 +27,31 @@ static void			fill_the_array(t_core *a, short p_colors[COLOR_NUM * 2])
 
 	indx = -1;
 	clr_indx = 0;
-	num_of_pair = 0;
+	num_of_pair = 210;
 	while (++indx < COLOR_NUM)
 	{
-		num_of_pair += 10;
+		num_of_pair += 5;
 		CLR(indx).c_clr = num_of_pair++;
-		init_pair(CLR(indx).c_clr, p_colors[clr_indx + 1], p_colors[clr_indx]);
+		init_pair(CLR(indx).c_clr, VIS->p_colors[COLOR_NUM],
+		VIS->p_colors[clr_indx]);
 		CLR(indx).st_clr = num_of_pair++;
-		init_pair(CLR(indx).st_clr, p_colors[clr_indx], p_colors[clr_indx + 1]);
+		init_pair(CLR(indx).st_clr, VIS->p_colors[clr_indx],
+		VIS->p_colors[COLOR_NUM]);
 		CLR(indx).live_clr = num_of_pair;
-		init_pair(CLR(indx).live_clr, COLOR_WHITE, p_colors[clr_indx]);
-		clr_indx += 2;
+		init_pair(CLR(indx).live_clr, COLOR_WHITE, VIS->p_colors[clr_indx]);
+		clr_indx++;
 	}
 }
 
 static void			create_col_pairs(t_core *a)
 {
-	short		p_colors[COLOR_NUM * 2];
-
-	p_colors[0] = COLOR_LRED;
-	p_colors[1] = COLOR_BLACK;
-	p_colors[2] = COLOR_PURPLE;
-	p_colors[3] = COLOR_BLACK;
-	p_colors[4] = COLOR_GREEN;
-	p_colors[5] = COLOR_BLACK;
-	p_colors[6] = COLOR_BIRUSA;
-	p_colors[7] = COLOR_BLACK;
-	p_colors[8] = 8;
-	p_colors[9] = COLOR_BLACK;
-	fill_the_array(a, p_colors);
+	VIS->p_colors[0] = COLOR_LRED;
+	VIS->p_colors[1] = COLOR_GREEEN;
+	VIS->p_colors[2] = COLOR_BIRUSA;
+	VIS->p_colors[3] = COLOR_PURPLE;
+	VIS->p_colors[4] = 8;
+	VIS->p_colors[5] = COLOR_BLACK;
+	fill_the_array(a);
 }
 
 static void			put_player_colors(t_core *a)
