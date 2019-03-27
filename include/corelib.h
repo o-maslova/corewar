@@ -19,7 +19,9 @@
 # include "typedef.h"
 # include "visualization.h"
 
+# define PLAYER				t_player
 # define VIS				a->visual
+# define MOD(p, i, tmp)	((MEM_SIZE + (p + i + tmp) % MEM_SIZE) % MEM_SIZE)
 struct					s_carriage
 {
 	int					player;			//номер игрока, породившего каретку//
@@ -84,7 +86,7 @@ struct					s_player
 
 void					make_core2(t_core *a);
 int						carret(t_carriage *c, t_core *a, unsigned char *s);
-void					print_arena(t_core *a);
+void					print_arena(t_core *a, int color);
 void					fight(t_core *a, t_carriage *c);
 int						check_cycles(t_core *a);
 int						get_args(t_core *a, t_carriage *c, short arg[3], short num);
@@ -95,6 +97,7 @@ int						function_codage(t_core *arena, t_carriage *car, short *arg);
 int						byte_cal(short *a, int i, t_core *s, t_carriage *c);
 short					get_pos_arg(t_core *a, t_carriage *c, short arg[3], short num); /// считает позицию на арене аргумента num
 void					free_all(t_core *a, char *s);
+void					pass_cycle(t_core *a);
 
 void					f1(t_core *a, t_carriage *c);
 void					f2_f13(t_core *a, t_carriage *c, int f);

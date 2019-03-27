@@ -99,6 +99,6 @@ void				initialize(t_core *a)
 	make_frame(VIS->info_win, COLOR_PAIR(FRAME));
 	create_col_pairs(a);
 	put_player_colors(a);
-	put_colors(a);
+	pass_cycle(a);
 	refresh();
 }

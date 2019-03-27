@@ -1,6 +1,6 @@
 #include "corelib.h"
 
-t_op	op_tab[17] =
+t_op	g_op_tab[17] =
 {
 	{"live", 1, {T_DIR}, 1, 10, "alive", 0, 4},
 	{"ld", 2, {T_DIR | T_IND, T_REG}, 2, 5, "load", 1, 4},
@@ -34,7 +34,7 @@ void	make_core2(t_core *a)
 	i = 0;
 	while (i < 17)
 	{
-		a->op_tab[i] = op_tab[i];
+		a->op_tab[i] = g_op_tab[i];
 		i++; 
 	}
 }

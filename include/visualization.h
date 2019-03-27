@@ -18,7 +18,7 @@
 # include "corelib.h"
 
 # define CLEAR_LINE		20
-# define SHOW_REGULATOR	(VIS->vremya + CLOCKS_PER_SEC / (VIS->c_per_s * 2))
+# define SHOW_REGULATOR	(VIS->vremya + CLOCKS_PER_SEC / (VIS->c_per_s))
 
 # define BCHAR			'*'
 # define MAINW_ROWS		64
@@ -86,7 +86,7 @@ struct			s_win
 	bool				if_run;
 	clock_t				vremya;
 	int					c_per_s; // cycle per second
-	short				rnbw[MAINW_ROWS / 2];
+	short				rnbw[MAINW_ROWS / 2 + 1];
 	short				p_colors[COLOR_NUM + 1];
 	t_paint				print[MEM_SIZE];
 	t_color				clr[MAX_PLAYERS + 1];
@@ -101,6 +101,7 @@ void			print_info_frame(t_core *a);
 void			make_frame(WINDOW *win, int color);
 void			destroy_win(WINDOW *local_win);
 void			rainbow(t_core *a, int color);
+char			*search_player(t_core *a, int num);
 WINDOW			*create_newwin(int heigth, int width, int start_y, int start_x);
 
 #endif
