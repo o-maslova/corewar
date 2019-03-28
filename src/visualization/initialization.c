@@ -95,10 +95,12 @@ void				initialize(t_core *a)
 	init_pair(FRAME, COLOR_OHRA, COLOR_OHRA);
 	VIS->main_win = newwin(HEIGTH, MAIN_WDTH, 0, 0);
 	make_frame(VIS->main_win, COLOR_PAIR(FRAME));
-	VIS->info_win = newwin(HEIGTH, INFO_WDTH, 0, MAIN_WDTH - 1);
+	VIS->stat_win = newwin(STAT_HGTH, INFO_WDTH, 0, MAIN_WDTH - 1);
+	make_frame(VIS->stat_win, COLOR_PAIR(FRAME));
+	VIS->info_win = newwin(INFO_HGTH, INFO_WDTH, STAT_HGTH - 1, MAIN_WDTH - 1);
 	make_frame(VIS->info_win, COLOR_PAIR(FRAME));
 	create_col_pairs(a);
 	put_player_colors(a);
-	pass_cycle(a);
+	put_colors(a);
 	refresh();
 }

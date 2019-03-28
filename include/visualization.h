@@ -17,7 +17,7 @@
 # include <time.h>
 # include "corelib.h"
 
-# define CLEAR_LINE		20
+# define CLEAR_LINE		25
 # define SHOW_REGULATOR	(VIS->vremya + CLOCKS_PER_SEC / (VIS->c_per_s))
 
 # define BCHAR			'*'
@@ -26,6 +26,8 @@
 # define HEIGTH			(MEM_SIZE / MAINW_ROWS + 4)
 # define MAIN_WDTH		(MAINW_ROWS * 3 + 7)
 # define INFO_WDTH		(MAIN_WDTH / 3)
+# define STAT_HGTH		(((HEIGTH - 4) / 4) * 3)
+# define INFO_HGTH		(HEIGTH - STAT_HGTH + 1)
 # define COLOR_NUM		(MAX_PLAYERS + 1)
 
 # define RUN				' '
@@ -34,11 +36,11 @@
 # define MINUS_SMALL		'w'
 # define PLUS_BIG			'r'
 # define PLUS_SMALL			'e'
+# define EXIT				27
 
 # define SMALL_STEP			1
 # define BIG_STEP			10
 # define ST_CYC_PER_SEC		50
-# define FOR_VISUAL			(VIS->c_per_s / 10)
 # define ELEM(i)			(VIS->print[i])
 # define CLR(i)				(VIS->clr[i])
 
@@ -91,13 +93,14 @@ struct			s_win
 	t_paint				print[MEM_SIZE];
 	t_color				clr[MAX_PLAYERS + 1];
 	WINDOW				*main_win;
+	WINDOW				*stat_win;
 	WINDOW				*info_win;
-	WINDOW				*raduga;
+	WINDOW				*raduga; //delete
 };
 
 void			put_colors(t_core *a);
 void			initialize(t_core *a);
-void			print_info_frame(t_core *a);
+void			print_side_frame(t_core *a);
 void			make_frame(WINDOW *win, int color);
 void			destroy_win(WINDOW *local_win);
 void			rainbow(t_core *a, int color);

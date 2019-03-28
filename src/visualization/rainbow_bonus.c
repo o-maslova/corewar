@@ -134,7 +134,7 @@ void				rainbow(t_core *a, int color)
 		if (pos == (MAINW_ROWS / 2 + 1))
 			pos = 1;
 	}
-	usleep(500000);
+	// usleep(500000);
 	// winner(a);
 	init_pair(FRAME, color, color);
 	print_arena(a, FRAME);

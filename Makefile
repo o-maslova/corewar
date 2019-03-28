@@ -14,7 +14,7 @@ SRC = op.c \
 		f1_f5.c \
 		f6_f10.c \
 		f11_f16.c \
-		fight.c \
+		fight.c
 
 VIS_SRC = initialization.c \
 			print.c \
