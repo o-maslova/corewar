@@ -1,1 +1,0 @@
-./corewar ./vm_champs/champs/bot_kompot.cor ./vm_champs/champs/championships/2017/tbillard/Douceur_power.cor ./vm_champs/champs/championships/2014/tdemay/champ.cor ./vm_champs/champs/championships/2014/gudepard/Kappa.cor

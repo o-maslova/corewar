@@ -17,10 +17,21 @@
 # include <time.h>
 # include "corelib.h"
 
-# define CLEAR_LINE		25
+/*
+** Macroses
+*/
+
 # define SHOW_REGULATOR	(VIS->vremya + CLOCKS_PER_SEC / (VIS->c_per_s))
+# define ELEM(i)		(VIS->print[i])
+# define CLR(i)			(VIS->clr[i])
+
+/*
+** Frames' defines
+*/
 
 # define BCHAR			'*'
+# define START_ROW		2
+# define CLEAR_LINE		25
 # define MAINW_ROWS		64
 # define PLAYER_FIELD	(MEM_SIZE / a->num_pl)
 # define HEIGTH			(MEM_SIZE / MAINW_ROWS + 4)
@@ -29,6 +40,10 @@
 # define STAT_HGTH		(((HEIGTH - 4) / 4) * 3)
 # define INFO_HGTH		(HEIGTH - STAT_HGTH + 1)
 # define COLOR_NUM		(MAX_PLAYERS + 1)
+
+/*
+** Keys for managing
+*/
 
 # define RUN				' '
 # define ONE_CYCLE_PASS		's'
@@ -41,8 +56,10 @@
 # define SMALL_STEP			1
 # define BIG_STEP			10
 # define ST_CYC_PER_SEC		50
-# define ELEM(i)			(VIS->print[i])
-# define CLR(i)				(VIS->clr[i])
+
+/*
+** Defines for colors
+*/
 
 # define FRAME				100
 # define COLOR_GREY			80
@@ -62,12 +79,14 @@
 # define COLOR_LBROWN		130
 # define COLOR_VASIL		111
 # define COLOR_PINK			200
-# define YEL				1
 
-# define START_ROW			2
+# define MUS_FIGHT			1
+# define MUS_MAGIC			2
+# define MUS_END			3
 
-int						g_fd;
-
+/*
+** Structure for storing colors for operations
+*/
 struct			s_color
 {
 	short				c_clr;
@@ -75,6 +94,9 @@ struct			s_color
 	short				live_clr;
 };
 
+/*
+** Structure for painting arena
+*/
 struct			s_paint
 {
 	short				in_field;
@@ -83,27 +105,44 @@ struct			s_paint
 	short				color;
 	short				default_clr;
 };
+
+struct			s_music
+{
+	bool				is_start;
+	char				*m_fight;
+	char				*magic;
+};
+
+/*
+** Structure for visualization
+*/
 struct			s_win
 {
 	bool				if_run;
+	bool				one_cycle;
 	clock_t				vremya;
-	int					c_per_s; // cycle per second
+	int					c_per_s;
 	short				rnbw[MAINW_ROWS / 2 + 1];
 	short				p_colors[COLOR_NUM + 1];
 	t_paint				print[MEM_SIZE];
 	t_color				clr[MAX_PLAYERS + 1];
+	t_music				music;
 	WINDOW				*main_win;
 	WINDOW				*stat_win;
 	WINDOW				*info_win;
-	WINDOW				*raduga; //delete
 };
 
 void			put_colors(t_core *a);
 void			initialize(t_core *a);
+void			end_of_game(t_core *a, int ch, t_carriage *c);
+void			delete_it(t_core *a);
 void			print_side_frame(t_core *a);
 void			make_frame(WINDOW *win, int color);
+void			print_side_frame(t_core *a);
 void			destroy_win(WINDOW *local_win);
 void			rainbow(t_core *a, int color);
+void			define_music(t_core *a);
+void			play_music(t_core *a, int what_now);
 char			*search_player(t_core *a, int num);
 WINDOW			*create_newwin(int heigth, int width, int start_y, int start_x);
 

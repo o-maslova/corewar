@@ -1,27 +1,38 @@
 NAME = corewar
-SRC_DIR = ./src/
+SRC_DIR = ./vm/
 INC_DIR = ./include/
 LIB_DIR = ./libft/
-VIS_DIR = ./src/visualization/
-# BIN_DIR = ./objects/
+VIS_DIR = ./vm/visualization/
 ERRFL = -Wall -Wextra -Werror
 
 CUR_FLAG =  -lncurses
 
 LIB = libft.a
-SRC = op.c \
-		main_2.c \
+SRC = args_functions.c \
+		carriege_functions.c \
 		f1_f5.c \
 		f6_f10.c \
 		f11_f16.c \
-		fight.c
+		fight.c \
+		free.c \
+		fun_for_fun.c \
+		get_args.c \
+		main.c \
+		nechto.c \
+		op.c \
+		player_functions.c \
+		stuff.c
 
-VIS_SRC = initialization.c \
-			print.c \
-			colors.c \
-			rainbow_bonus.c
 
-INCLUDES = ./op.h ./corelib.h ./visualization.h
+VIS_SRC = colors.c \
+			end_of_game.c \
+			initialization.c \
+			musica.c \
+			print_side_frame.c \
+			rainbow_bonus.c \
+			visual_fight.c
+
+INCLUDES = ./corelib.h ./op.h ./visualization.h
 
 SRCD = $(addprefix $(SRC_DIR), $(SRC))
 INCD = $(addprefix $(INC_DIR), $(INCLUDES))
@@ -38,7 +49,7 @@ lib:
 	@make -C $(LIB_DIR)
 
 $(NAME): $(BIN) $(BINV) $(LIBD)
-	gcc -o $(NAME) $(BIN) $(BINV) $(LIBD) $(CUR_FLAG)
+	gcc -o $(NAME) $(LIBD) $(BIN) $(BINV) $(CUR_FLAG)
 
 %.o: %.c $(INCD)
 	gcc -o $@ -c $< -I $(LIB_DIR) -I $(INC_DIR)

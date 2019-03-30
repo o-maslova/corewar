@@ -1,1 +1,0 @@
-./mass_checker.zsh ./champs/championships/2014/tdemay/champ.cor ./champs/championships/2014/gudepard/Kappa.cor ./champs/bot_kompot.cor ./champs/championships/2017/tbillard/Douceur_power.cor
