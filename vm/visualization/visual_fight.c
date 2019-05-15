@@ -37,11 +37,10 @@ void		print_cycle(t_core *a, int first_step, t_carriage *c)
 	print_arena(a, FRAME);
 }
 
-void		check_cyc_per_sec(t_core *a, char ch)
+int			check_cyc_per_sec(t_core *a, char ch)
 {
-	int tmp;
-
-	tmp = VIS->c_per_s;
+	if (!VIS->music.is_start)
+		system("pkill afplay");
 	if (ch == MINUS_BIG)
 		VIS->c_per_s -= BIG_STEP;
 	if (ch == PLUS_BIG)
@@ -52,6 +51,7 @@ void		check_cyc_per_sec(t_core *a, char ch)
 		VIS->c_per_s += SMALL_STEP;
 	(VIS->c_per_s < 1) && (VIS->c_per_s = 1);
 	(VIS->c_per_s > 1000) && (VIS->c_per_s = 1000);
+	return (1);
 }
 
 void		print_arena(t_core *a, int frame)
@@ -61,6 +61,7 @@ void		print_arena(t_core *a, int frame)
 	int		that_color;
 
 	i = -1;
+	frame = 0;
 	row = START_ROW - 1;
 	while (++i < MEM_SIZE)
 	{
@@ -83,9 +84,9 @@ void		visual_fight(t_core *a, t_carriage *c)
 	system("clear");
 	initialize(a);
 	print_cycle(a, 0, c);
-	VIS->if_run = 0;
 	while ((ch = getch()) != EXIT && a->cycle_to_die > 0 && a->carrs)
 	{
+		VIS->music.is_start = ch == TURNOFF_MUS ? false : true;
 		if (ch == RUN)
 			VIS->if_run = !VIS->if_run;
 		else if (ch == ONE_CYCLE_PASS)
@@ -102,5 +103,5 @@ void		visual_fight(t_core *a, t_carriage *c)
 		check_cyc_per_sec(a, ch);
 		print_side_frame(a);
 	}
-	end_of_game(a, ch, c);
+	end_of_game(a, ch);
 }

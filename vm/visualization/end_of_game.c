@@ -24,7 +24,7 @@ void		delete_it(t_core *a)
 	exit(0);
 }
 
-void		end_of_game(t_core *a, int ch, t_carriage *c)
+void		end_of_game(t_core *a, int ch)
 {
 	if (ch == EXIT)
 		delete_it(a);

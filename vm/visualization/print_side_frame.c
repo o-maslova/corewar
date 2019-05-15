@@ -64,6 +64,8 @@ static void			print_info(t_core *a)
 	CLEAR_LINE, SMALL_STEP);
 	mvwprintw(VIS->info_win, (row += 2), 4, "r - increase by \t%-*d",
 	CLEAR_LINE, BIG_STEP);
+	mvwprintw(VIS->info_win, (row += 2), 4, "m - turn off the music \t%-*d",
+	CLEAR_LINE, TURNOFF_MUS);
 	mvwprintw(VIS->info_win, (row += 4), 4, "To pass one cycle press 's'");
 }
 
@@ -78,7 +80,7 @@ static void			print_static(t_core *a, int row)
 	CLEAR_LINE, NBR_LIVE);
 	mvwprintw(VIS->stat_win, (row += 2), 4, "MAX_CHECKS :\t%-*d",
 	CLEAR_LINE, MAX_CHECKS);
-	if (a->cycle_to_die < 0)
+	if (a->cycle_to_die < 0 || !a->carrs)
 	{
 		mvwprintw(VIS->stat_win, (row += 2), 4, "The winner is :\t");
 		wattron(VIS->stat_win,

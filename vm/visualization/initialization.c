@@ -65,7 +65,7 @@ static void			put_player_colors(t_core *a)
 	step = 0;
 	while (i < MEM_SIZE)
 	{
-		while (tmp && i < tmp->length + step)
+		while (tmp && i < (int)tmp->length + step)
 			VIS->print[i++].default_clr = CLR(tmp->number - 1).st_clr;
 		if (tmp)
 		{

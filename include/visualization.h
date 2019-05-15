@@ -51,6 +51,7 @@
 # define MINUS_SMALL		'w'
 # define PLUS_BIG			'r'
 # define PLUS_SMALL			'e'
+# define TURNOFF_MUS		'm'
 # define EXIT				27
 
 # define SMALL_STEP			1
@@ -134,7 +135,7 @@ struct			s_win
 
 void			put_colors(t_core *a);
 void			initialize(t_core *a);
-void			end_of_game(t_core *a, int ch, t_carriage *c);
+void			end_of_game(t_core *a, int ch);
 void			delete_it(t_core *a);
 void			print_side_frame(t_core *a);
 void			make_frame(WINDOW *win, int color);

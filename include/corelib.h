@@ -103,7 +103,8 @@ T_P						*find_place(T_P *cur, T_P *new_cur,
 									short pos[MAX_PLAYERS], int num);
 T_P						*player_numb(T_P *player, int *shitty, int t);
 T_P						*creat_player(T_P *player, int t, char *s);
-T_P						*move_p(T_P *def, T_P *cur, short pos[MAX_PLAYERS], int num);
+T_P						*move_p(T_P *def, T_P *cur, short pos[MAX_PLAYERS],
+									int num);
 void					functions(t_carriage *c, t_core *a, int f);
 void					check_args(int argc, char **argv, T_P *pl, int *d);
 void					ft_error(T_P *p, int t, char *s);

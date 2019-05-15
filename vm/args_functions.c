@@ -46,7 +46,7 @@ int			typeofarg(char *argv, int *t, int o, t_player *pl)
 	i = -1;
 	if (ft_strcmp(argv, "-n") == 0 && o == -1)
 		return (2);
-	if (ft_strcmp(argv, "-d") == 0 && o == -1)
+	if (ft_strcmp(argv, "-dump") == 0 && o == -1)
 		return (4);
 	if (ft_strcmp(argv, "-v") == 0 && o == -1)
 		return (8);

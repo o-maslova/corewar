@@ -81,7 +81,7 @@ void				undef_beh(t_flags *fl, char c);
 void				undef_beh_type(char *str);
 char				*set_precision(int len, char *buff, t_flags *fl);
 char				*set_pad(int width, char *buff, t_flags *fl);
-char				*ft_itoa_base(uintmax_t nb, int base);
+char				*ft_itoa_b(uintmax_t nb, int base);
 char				*ft_uitoa(uintmax_t n);
 int					print_unicode(t_arg *var);
 int					print_uni_str(t_arg *var, t_flags *fl);

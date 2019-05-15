@@ -70,7 +70,6 @@ void	f12_f15(t_core *a, t_carriage *c, int p)
 {
 	int			i;
 	short		g[1];
-	t_carriage	*c2;
 
 	c->jump = 3;
 	g[0] = 2;

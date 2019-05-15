@@ -15,7 +15,6 @@
 static void			create_rainbow_array(t_core *a)
 {
 	int		i;
-	int		j;
 	char	*str;
 	char	**arr;
 
@@ -74,6 +73,17 @@ static int			coloring_cell(t_core *a, int k, int color, int *row)
 	return (k);
 }
 
+static int			def_number(t_core *a, int k)
+{
+	if (a->last_say_live == 1)
+		k += 0;
+	if (a->last_say_live == 2)
+		k += 64 - (MEM_SIZE / 3) % 64;
+	if (a->last_say_live == 3)
+		k -= (((MEM_SIZE / 3) * 2) % 64);
+	return (k);
+}
+
 void				rainbow(t_core *a, int color)
 {
 	int i;
@@ -84,7 +94,7 @@ void				rainbow(t_core *a, int color)
 	create_rainbow_array(a);
 	k = (a->last_say_live - 1) * PLAYER_FIELD;
 	if ((MEM_SIZE % a->num_pl) != 0)
-		k += 43;
+		k = def_number(a, k);
 	row = k / MAINW_ROWS + 2;
 	pos = search_color(a, color);
 	i = 0;

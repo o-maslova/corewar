@@ -84,12 +84,14 @@ SRC = ./ft_memset.c \
 		./ft_emptyline.c \
 		./ft_countchar.c \
 		./ft_degree_of_three.c \
+		./ft_itoa_base.c \
 		./get_next_line.c \
-		./ft_arrdel.c
+		./ft_arrdel.c \
+		./ft_free_split.c
 
 PRINTF_SRC = ./ft_printf/cast.c \
 			./ft_printf/extra_fun.c \
-			./ft_printf/ft_itoa_base.c \
+			./ft_printf/ft_itoa_b.c \
 			./ft_printf/ft_printf.c \
 			./ft_printf/integer.c \
 			./ft_printf/o_and_x.c \

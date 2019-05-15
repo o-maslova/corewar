@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_itoa_base.c                                     :+:      :+:    :+:   */
+/*   ft_itoa_b.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omaslova <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: omaslova <omaslova@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/08/20 15:44:40 by omaslova          #+#    #+#             */
-/*   Updated: 2018/08/20 15:44:42 by omaslova         ###   ########.fr       */
+/*   Created: 2019/03/31 15:17:21 by omaslova          #+#    #+#             */
+/*   Updated: 2019/03/31 15:17:23 by omaslova         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	*rev_str(char *str)
 	return (str);
 }
 
-char	*ft_itoa_base(uintmax_t nb, int base)
+char	*ft_itoa_b(uintmax_t nb, int base)
 {
 	int		i;
 	char	*num;
