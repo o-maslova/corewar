@@ -17,7 +17,7 @@ void		define_music(t_core *a)
 	static char *tmp;
 
 	VIS->music.is_start = true;
-	tmp = "afplay /./vm/music/";
+	tmp = "afplay ./vm/music/";
 	VIS->music.m_fight = ft_strjoin(tmp, "epic.mp3 &> /dev/null &");
 	VIS->music.magic = ft_strjoin(tmp, "boogie.mp3 &> /dev/null &");
 }
