@@ -42,6 +42,8 @@ sets the number of the next player. If non-existent, the player will have the ne
 #### For example:
 		./corewar -v -n 2 ./BotX.cor ./BotX.cor
 
+*You can specify not more than 4 players.*
+
 ### DON'T RUSH AT THE END OF THE GAME.
 ### PRESS 'SPACE' AND SEE THE MAGIC :)
 
